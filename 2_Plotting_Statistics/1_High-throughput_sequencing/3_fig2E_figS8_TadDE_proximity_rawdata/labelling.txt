@@ -1,0 +1,7 @@
+Each name in bracket means file name with "_Exp13-" (e.g. _Exp13-11_1)
+
+[[Cycle0], [Cycle4-1, Cycle4-2, Cycle 4-3]]=
+[["11_1"],["9_1","9_2","9_3"]],  ##TadDE_L16_CasB +crRNA
+[["11_2"],["9_4","9_5","9_6"]],  ##TadDE_L16_CasB -crRNA
+[["11_3"],["10_1","10_2","10_3"]],  ##TadDE_UGI +crRNA
+[["11_4"],["10_4","10_5","10_6"]],  ##TadDE_UGI -crRNA
