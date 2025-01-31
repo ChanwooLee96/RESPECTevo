@@ -165,7 +165,7 @@ def NGS_lineplot(mutlist,i_merging_name,merging_filelist,o_filename,
     ax.tick_params(axis='both', which='major')
     ax.set_xlabel("position",fontdict=font_label, labelpad=10)
     ax.set_ylabel(ylabel,fontdict=font_label, labelpad=10)           
-    ax.set_xlim(list(map(int,minmax_range)))
+    ax.set_xlim(list(map(int,graphrange)))
     if log:
         ax.set(yscale="log")
         ax.set_ylabel("LOG("+ylabel+")",fontdict=font_label, labelpad=10)
@@ -661,7 +661,7 @@ for count0 in range(0,len(Wholelist_proximity)):
 
 
 
-## Boxplot targeted region fig2E##
+# ## Boxplot targeted region fig2E##
 
 filelist_temp=[["9_1","9_2","9_3"],["9_4","9_5","9_6"],["10_1","10_2","10_3"],["10_4","10_5","10_6"]]
 range__list=[[443,547],[321,562],[443,547],[321,562]]

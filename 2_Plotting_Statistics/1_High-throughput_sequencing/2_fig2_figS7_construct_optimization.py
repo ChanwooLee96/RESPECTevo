@@ -165,7 +165,7 @@ def NGS_lineplot(mutlist,i_merging_name,merging_filelist,o_filename,
     ax.tick_params(axis='both', which='major')
     ax.set_xlabel("position",fontdict=font_label, labelpad=10)
     ax.set_ylabel(ylabel,fontdict=font_label, labelpad=10)           
-    ax.set_xlim(list(map(int,minmax_range)))
+    ax.set_xlim(list(map(int,graphrange)))
     if log:
         ax.set(yscale="log")
         ax.set_ylabel("LOG("+ylabel+")",fontdict=font_label, labelpad=10)
@@ -661,31 +661,31 @@ for count0 in range(0,len(Wholelist_mutatortype)):
     plt.close()
 
 
-### boxplot fig2C pmcDA-APOBEC ###
-filelist_temp=[["1_1","1_2","1_3"],["1_4","1_5","1_6"]]
-num=0
-for i in filelist_temp:
-    num1=0
-    for j in filelist_temp[num]:
-        filelist_temp[num][num1]=basicpath+f"_Exp9-{filelist_temp[num][num1]}.xlsx"
-        num1=num1+1
-    num=num+1
-namelist=["PmCDA-32-CasB","APOBEC-64-CasC"]
+# ### boxplot fig2C pmcDA-APOBEC ###
+# filelist_temp=[["1_1","1_2","1_3"],["1_4","1_5","1_6"]]
+# num=0
+# for i in filelist_temp:
+#     num1=0
+#     for j in filelist_temp[num]:
+#         filelist_temp[num][num1]=basicpath+f"_Exp9-{filelist_temp[num][num1]}.xlsx"
+#         num1=num1+1
+#     num=num+1
+# namelist=["PmCDA-32-CasB","APOBEC-64-CasC"]
 
-### targeted region Fig2C ### 
-NGSmutation_frequency_v2(["CtoT"],namelist,filelist_temp,"Set21_pmAPO_opt_Cyc4_summary_average_mutrange",[443,547],width=1.8,graphmod="Box",color_list=blue1,legend=False,outtype="pdf")
-NGSmutation_frequency_v2(["GtoA"],namelist,filelist_temp,"Set21_pmAPO_opt_Cyc4_summary_average_mutrange",[443,547],width=1.8,graphmod="Box",color_list=blue2,legend=False,outtype="pdf")
-NGSmutation_frequency_v2(["AtoG"],namelist,filelist_temp,"Set21_pmAPO_opt_Cyc4_summary_average_mutrange",[443,547],width=1.8,graphmod="Box",color_list=red1,legend=False,outtype="pdf")
-NGSmutation_frequency_v2(["TtoC"],namelist,filelist_temp,"Set21_pmAPO_opt_Cyc4_summary_average_mutrange",[443,547],width=1.8,graphmod="Box",color_list=red2,legend=False,outtype="pdf")
-### untargeted region FigS7 ###
-NGSmutation_frequency_v2(["CtoT"],namelist,filelist_temp,"Set21_pmAPO_opt_Cyc4_summary_average_mutrange_X",[321,442,548,562],width=1.8,graphmod="Box",color_list=blue1,legend=False,outtype="pdf")
-NGSmutation_frequency_v2(["GtoA"],namelist,filelist_temp,"Set21_pmAPO_opt_Cyc4_summary_average_mutrange_X",[321,442,548,562],width=1.8,graphmod="Box",color_list=blue2,legend=False,outtype="pdf")
-NGSmutation_frequency_v2(["AtoG"],namelist,filelist_temp,"Set21_pmAPO_opt_Cyc4_summary_average_mutrange_X",[321,442,548,562],width=1.8,graphmod="Box",color_list=red1,legend=False,outtype="pdf")
-NGSmutation_frequency_v2(["TtoC"],namelist,filelist_temp,"Set21_pmAPO_opt_Cyc4_summary_average_mutrange_X",[321,442,548,562],width=1.8,graphmod="Box",color_list=red2,legend=False,outtype="pdf")
+# ### targeted region Fig2C ### 
+# NGSmutation_frequency_v2(["CtoT"],namelist,filelist_temp,"Set21_pmAPO_opt_Cyc4_summary_average_mutrange",[443,547],width=1.8,graphmod="Box",color_list=blue1,legend=False,outtype="pdf")
+# NGSmutation_frequency_v2(["GtoA"],namelist,filelist_temp,"Set21_pmAPO_opt_Cyc4_summary_average_mutrange",[443,547],width=1.8,graphmod="Box",color_list=blue2,legend=False,outtype="pdf")
+# NGSmutation_frequency_v2(["AtoG"],namelist,filelist_temp,"Set21_pmAPO_opt_Cyc4_summary_average_mutrange",[443,547],width=1.8,graphmod="Box",color_list=red1,legend=False,outtype="pdf")
+# NGSmutation_frequency_v2(["TtoC"],namelist,filelist_temp,"Set21_pmAPO_opt_Cyc4_summary_average_mutrange",[443,547],width=1.8,graphmod="Box",color_list=red2,legend=False,outtype="pdf")
+# ### untargeted region FigS7 ###
+# NGSmutation_frequency_v2(["CtoT"],namelist,filelist_temp,"Set21_pmAPO_opt_Cyc4_summary_average_mutrange_X",[321,442,548,562],width=1.8,graphmod="Box",color_list=blue1,legend=False,outtype="pdf")
+# NGSmutation_frequency_v2(["GtoA"],namelist,filelist_temp,"Set21_pmAPO_opt_Cyc4_summary_average_mutrange_X",[321,442,548,562],width=1.8,graphmod="Box",color_list=blue2,legend=False,outtype="pdf")
+# NGSmutation_frequency_v2(["AtoG"],namelist,filelist_temp,"Set21_pmAPO_opt_Cyc4_summary_average_mutrange_X",[321,442,548,562],width=1.8,graphmod="Box",color_list=red1,legend=False,outtype="pdf")
+# NGSmutation_frequency_v2(["TtoC"],namelist,filelist_temp,"Set21_pmAPO_opt_Cyc4_summary_average_mutrange_X",[321,442,548,562],width=1.8,graphmod="Box",color_list=red2,legend=False,outtype="pdf")
 
-NGSstats_v2(["CtoT","GtoA","TtoC","AtoG"],namelist,filelist_temp,"Set21_pmAPO_opt_Cyc4_mutrange",rangelist=[443,547],rangemod="same",hypothesis_mod="two-sided",ref_num=0)
-NGSstats_average_mutfreq(["CtoT","GtoA","TtoC","AtoG"],namelist,filelist_temp,"Set21_pmAPO_opt_Cyc4_mutrange",rangelist=[443,547],rangemod="same")
-NGSstats_average_mutfreq(["CtoT","GtoA","TtoC","AtoG"],namelist,filelist_temp,"Set21_pmAPO_opt_Cyc4_mutrange_X",rangelist=[321,442,548,562],rangemod="same")
+# NGSstats_v2(["CtoT","GtoA","TtoC","AtoG"],namelist,filelist_temp,"Set21_pmAPO_opt_Cyc4_mutrange",rangelist=[443,547],rangemod="same",hypothesis_mod="two-sided",ref_num=0)
+# NGSstats_average_mutfreq(["CtoT","GtoA","TtoC","AtoG"],namelist,filelist_temp,"Set21_pmAPO_opt_Cyc4_mutrange",rangelist=[443,547],rangemod="same")
+# NGSstats_average_mutfreq(["CtoT","GtoA","TtoC","AtoG"],namelist,filelist_temp,"Set21_pmAPO_opt_Cyc4_mutrange_X",rangelist=[321,442,548,562],rangemod="same")
 
 
 
@@ -730,7 +730,7 @@ for count0 in range(0,len(Wholelist_mutatortype)):
     plt.close()
 
 
-### boxplot Fig2D FigS7B###
+## boxplot Fig2D FigS7B###
 filelist_temp=[["2_1","2_2","2_3"],["2_4","2_5","2_6"],["3_1","3_2","3_3"],["3_4","3_5","3_6"],["4_1","4_2","4_3"],["4_4","4_5","4_6"]]
 num=0
 for i in filelist_temp:

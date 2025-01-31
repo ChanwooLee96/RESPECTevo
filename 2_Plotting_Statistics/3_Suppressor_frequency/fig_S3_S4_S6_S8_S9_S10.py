@@ -135,40 +135,40 @@ def two_sample_stats_independent(i_file_path,Sorting_var="target",hue_var="",val
 basicpath="RESPECTevo-Code_Rawdata/2_Plotting_Statistics/3_Suppressor_frequency/rawdata_zip/"
 
 
-# """fig.S3 Mock cycle"""
-# file_name="_1_figS3_Mockcycle.xlsx"
-# ## 1st panel pm_16_CasB##
-# suppression_freq(basicpath+file_name,"PmCasB_cyc1_bf_aft_mock",
-#                  sheet="1stpanel",width=4,height=3.6,legend_num=2,datatype="pdf",ymin=10**-6,
-#                  sorting_var="Types",type_name="mock")
-# ## 2nd panel pm_16_CasB ungKO##
-# suppression_freq(basicpath+file_name,"ung_cyc1_bf_aft_mock",
-#                  sheet="2ndpanel",width=4,height=3.6,legend_num=2,datatype="pdf",ymin=10**-6,
-#                  sorting_var="Types",type_name="mock")
-# ## 2nd panel TadDE##
-# suppression_freq(basicpath+file_name,"TadDE_cyc1_bf_aft_mock",
-#                  sheet="3rdpanel",width=5,height=3.6,legend_num=2,datatype="pdf",ymin=10**-6,
-#                  sorting_var="Types",type_name="mock")
+"""fig.S3 Mock cycle"""
+file_name="_1_figS3_Mockcycle.xlsx"
+## 1st panel pm_16_CasB##
+suppression_freq(basicpath+file_name,"PmCasB_cyc1_bf_aft_mock",
+                 sheet="1stpanel",width=4,height=3.6,legend_num=2,datatype="pdf",ymin=10**-6,
+                 sorting_var="Types",type_name="mock")
+## 2nd panel pm_16_CasB ungKO##
+suppression_freq(basicpath+file_name,"ung_cyc1_bf_aft_mock",
+                 sheet="2ndpanel",width=4,height=3.6,legend_num=2,datatype="pdf",ymin=10**-6,
+                 sorting_var="Types",type_name="mock")
+## 2nd panel TadDE##
+suppression_freq(basicpath+file_name,"TadDE_cyc1_bf_aft_mock",
+                 sheet="3rdpanel",width=5,height=3.6,legend_num=2,datatype="pdf",ymin=10**-6,
+                 sorting_var="Types",type_name="mock")
     
-# """Mock cycle suppression stats"""
-# sample_type=["Pm_L16_CasB_33nt","Pm_L16_CasB_57nt"]
-# hue_type=["bf.mock","aft.mock"]
-# for i in range(0,len(sample_type)):
-#     two_sample_stats_independent(basicpath+file_name,Sorting_var="Types",hue_var="mock",value_name="Suppression rate",
-#                                     sheet="1stpanel",sample1=sample_type[i],hue1=hue_type[0],sample2=sample_type[i],hue2=hue_type[1],mod="ttest",hypothesis_mod="two-sided")
+"""Mock cycle suppression stats"""
+sample_type=["Pm_L16_CasB_33nt","Pm_L16_CasB_57nt"]
+hue_type=["bf.mock","aft.mock"]
+for i in range(0,len(sample_type)):
+    two_sample_stats_independent(basicpath+file_name,Sorting_var="Types",hue_var="mock",value_name="Suppression rate",
+                                    sheet="1stpanel",sample1=sample_type[i],hue1=hue_type[0],sample2=sample_type[i],hue2=hue_type[1],mod="ttest",hypothesis_mod="two-sided")
     
-# sample_type=["Pm_L16_CasB","Pm_L16_CasB UNG KO"]
-# hue_type=["bf.mock","aft.mock"]
-# for i in range(0,len(sample_type)):
-#     two_sample_stats_independent(basicpath+file_name,Sorting_var="Types",hue_var="mock",value_name="Suppression rate",
-#                                     sheet="2ndpanel",sample1=sample_type[i],hue1=hue_type[0],sample2=sample_type[i],hue2=hue_type[1],mod="ttest",hypothesis_mod="two-sided")  
+sample_type=["Pm_L16_CasB","Pm_L16_CasB UNG KO"]
+hue_type=["bf.mock","aft.mock"]
+for i in range(0,len(sample_type)):
+    two_sample_stats_independent(basicpath+file_name,Sorting_var="Types",hue_var="mock",value_name="Suppression rate",
+                                    sheet="2ndpanel",sample1=sample_type[i],hue1=hue_type[0],sample2=sample_type[i],hue2=hue_type[1],mod="ttest",hypothesis_mod="two-sided")  
       
 
-# sample_type=["TadDE_L16_CasB","TadDE_L32_CasB","TadDE_L64_CasB","TadDE_L16_CasC","TadDE_L32_CasC","TadDE_L64_CasC"]
-# hue_type=["bf.mock","aft.mock"]
-# for i in range(0,len(sample_type)):
-#     two_sample_stats_independent(basicpath+file_name,Sorting_var="Types",hue_var="mock",value_name="Suppression rate",
-#                                     sheet="3rdpanel",sample1=sample_type[i],hue1=hue_type[0],sample2=sample_type[i],hue2=hue_type[1],mod="ttest",hypothesis_mod="two-sided")  
+sample_type=["TadDE_L16_CasB","TadDE_L32_CasB","TadDE_L64_CasB","TadDE_L16_CasC","TadDE_L32_CasC","TadDE_L64_CasC"]
+hue_type=["bf.mock","aft.mock"]
+for i in range(0,len(sample_type)):
+    two_sample_stats_independent(basicpath+file_name,Sorting_var="Types",hue_var="mock",value_name="Suppression rate",
+                                    sheet="3rdpanel",sample1=sample_type[i],hue1=hue_type[0],sample2=sample_type[i],hue2=hue_type[1],mod="ttest",hypothesis_mod="two-sided")  
 
 
 
@@ -177,10 +177,10 @@ basicpath="RESPECTevo-Code_Rawdata/2_Plotting_Statistics/3_Suppressor_frequency/
 
 
 
-# """fig.S4A Pm_L16_CasB +-mutator """
-# file_name="_2_figS4A_+-mutator_pmcda.xlsx"
-# suppression_freq(basicpath+file_name,"pmCasB_cascade_105bp_Cycle_supprfreq",sorting_var="Type",type_name="Cycle",
-#                  sheet="suppression",width=5,height=3.6,legend_num=5,datatype="pdf",ymin=5*10**-8)
+"""fig.S4A Pm_L16_CasB +-mutator """
+file_name="_2_figS4A_+-mutator_pmcda.xlsx"
+suppression_freq(basicpath+file_name,"pmCasB_cascade_105bp_Cycle_supprfreq",sorting_var="Type",type_name="Cycle",
+                 sheet="suppression",width=5,height=3.6,legend_num=5,datatype="pdf",ymin=5*10**-8)
 
 
 
@@ -188,77 +188,77 @@ basicpath="RESPECTevo-Code_Rawdata/2_Plotting_Statistics/3_Suppressor_frequency/
 
 
 
-# """fig.S4B UNG KO"""
-# file_name="_3_figS4B_PmCasB_C-ung-KO.xlsx"
-# suppression_freq(basicpath+file_name,"PmCasB_105bp_UNGKO_supprfreq",sorting_var="Type",type_name="Cycle",
-#                  sheet="suppression",width=5,height=3.6,legend_num=4,datatype="pdf",ymin=5*10**-8)
+"""fig.S4B UNG KO"""
+file_name="_3_figS4B_PmCasB_C-ung-KO.xlsx"
+suppression_freq(basicpath+file_name,"PmCasB_105bp_UNGKO_supprfreq",sorting_var="Type",type_name="Cycle",
+                 sheet="suppression",width=5,height=3.6,legend_num=4,datatype="pdf",ymin=5*10**-8)
 
 
-# """Set20 UNG KO stats"""
+"""Set20 UNG KO stats"""
 
-# sample_type=["Pm-CasB 105nt","Pm-CasB 105nt ung","pm-CasB (-)crRNA","pm-CasB (-)crRNA ung"]
-# hue_type=["Cycle4"]
-# for i in [0,1]:
-#     two_sample_stats_independent(basicpath+file_name,Sorting_var="Type",hue_var="Cycle",value_name="Suppression rate",
-#                                     sheet="suppression",sample1=sample_type[2*i],hue1=hue_type[0],sample2=sample_type[2*i+1],hue2=hue_type[0],mod="ttest",hypothesis_mod="two-sided")
-
-
-
-
-
-# """fig.S6 TadA-8e"""
-# file_name="_4_figS6_TadA_optimization.xlsx"
-# suppression_freq(basicpath+file_name,"TadA_optimization_cyc4",
-#                  sheet="suppression_Cyc4",width=5,height=3.6,legend_num=3,datatype="pdf",ymin=5*10**-8,
-#                  sorting_var="Types",type_name="linker")
-
-# suppression_freq(basicpath+file_name,"TadA_optimization_cyc0",
-#                  sheet="suppression_Cyc0",width=5,height=3.6,legend_num=3,datatype="pdf",ymin=5*10**-8,
-#                  sorting_var="Types",type_name="linker")
+sample_type=["Pm-CasB 105nt","Pm-CasB 105nt ung","pm-CasB (-)crRNA","pm-CasB (-)crRNA ung"]
+hue_type=["Cycle4"]
+for i in [0,1]:
+    two_sample_stats_independent(basicpath+file_name,Sorting_var="Type",hue_var="Cycle",value_name="Suppression rate",
+                                    sheet="suppression",sample1=sample_type[2*i],hue1=hue_type[0],sample2=sample_type[2*i+1],hue2=hue_type[0],mod="ttest",hypothesis_mod="two-sided")
 
 
 
 
 
-# """fig.S6 PmCDA-APOBEC"""
-# file_name="_5_figS6_pmCDA_rAPOBEC_optimization.xlsx"
-# suppression_freq(basicpath+file_name,"Pm_APO_optimization_cyc4_CasB",
-#                  sheet="Cyc4_CasB",width=4,height=3.6,legend_num=3,datatype="pdf",ymin=5*10**-8,
-#                  sorting_var="Cascade type",type_name="linker")
-# suppression_freq(basicpath+file_name,"Pm_APO_optimization_cyc4_CasC",
-#                  sheet="Cyc4_CasC",width=4,height=3.6,legend_num=3,datatype="pdf",ymin=5*10**-8,
-#                  sorting_var="Cascade type",type_name="linker")
+"""fig.S6 TadA-8e"""
+file_name="_4_figS6_TadA_optimization.xlsx"
+suppression_freq(basicpath+file_name,"TadA_optimization_cyc4",
+                 sheet="suppression_Cyc4",width=5,height=3.6,legend_num=3,datatype="pdf",ymin=5*10**-8,
+                 sorting_var="Types",type_name="linker")
 
-# suppression_freq(basicpath+file_name,"Pm_APO_optimization_cyc0_CasB",
-#                  sheet="Cyc0_CasB",width=4,height=3.6,legend_num=3,datatype="pdf",ymin=5*10**-8,
-#                  sorting_var="Cascade type",type_name="linker")
-# suppression_freq(basicpath+file_name,"Pm_APO_optimization_cyc0_CasC",
-#                  sheet="Cyc0_CasC",width=4,height=3.6,legend_num=3,datatype="pdf",ymin=5*10**-8,
-#                  sorting_var="Cascade type",type_name="linker")
+suppression_freq(basicpath+file_name,"TadA_optimization_cyc0",
+                 sheet="suppression_Cyc0",width=5,height=3.6,legend_num=3,datatype="pdf",ymin=5*10**-8,
+                 sorting_var="Types",type_name="linker")
 
 
 
 
 
+"""fig.S6 PmCDA-APOBEC"""
+file_name="_5_figS6_pmCDA_rAPOBEC_optimization.xlsx"
+suppression_freq(basicpath+file_name,"Pm_APO_optimization_cyc4_CasB",
+                 sheet="Cyc4_CasB",width=4,height=3.6,legend_num=3,datatype="pdf",ymin=5*10**-8,
+                 sorting_var="Cascade type",type_name="linker")
+suppression_freq(basicpath+file_name,"Pm_APO_optimization_cyc4_CasC",
+                 sheet="Cyc4_CasC",width=4,height=3.6,legend_num=3,datatype="pdf",ymin=5*10**-8,
+                 sorting_var="Cascade type",type_name="linker")
 
-# """fig.S6 TadDE"""
-# file_name="_6_figS6_TadDE_optimization.xlsx"
-# suppression_freq(basicpath+file_name,"Set24_TadDE_optimization_cyc4",
-#                  sheet="suppression_Cyc4",width=5,height=3.6,legend_num=3,datatype="pdf",ymin=5*10**-8,
-#                  sorting_var="Types",type_name="Linker")
-
-# suppression_freq(basicpath+file_name,"Set24_TadDE_optimization_cyc0",
-#                  sheet="suppression_Cyc0",width=5,height=3.6,legend_num=3,datatype="pdf",ymin=5*10**-8,
-#                  sorting_var="Types",type_name="Linker")
+suppression_freq(basicpath+file_name,"Pm_APO_optimization_cyc0_CasB",
+                 sheet="Cyc0_CasB",width=4,height=3.6,legend_num=3,datatype="pdf",ymin=5*10**-8,
+                 sorting_var="Cascade type",type_name="linker")
+suppression_freq(basicpath+file_name,"Pm_APO_optimization_cyc0_CasC",
+                 sheet="Cyc0_CasC",width=4,height=3.6,legend_num=3,datatype="pdf",ymin=5*10**-8,
+                 sorting_var="Cascade type",type_name="linker")
 
 
 
 
 
-# """fig.S8 TadDE proximity"""
-# file_name="_7_figS8_TadDE proximity.xlsx"
-# suppression_freq(basicpath+file_name,"Set29_Proximity_effect_Cycle_supprfreq",sorting_var="Type",type_name="Cycle",
-#                  sheet="suppression summary",width=4.5,height=3.6,legend_num=4,datatype="pdf",ymin=5*10**-8)
+
+"""fig.S6 TadDE"""
+file_name="_6_figS6_TadDE_optimization.xlsx"
+suppression_freq(basicpath+file_name,"Set24_TadDE_optimization_cyc4",
+                 sheet="suppression_Cyc4",width=5,height=3.6,legend_num=3,datatype="pdf",ymin=5*10**-8,
+                 sorting_var="Types",type_name="Linker")
+
+suppression_freq(basicpath+file_name,"Set24_TadDE_optimization_cyc0",
+                 sheet="suppression_Cyc0",width=5,height=3.6,legend_num=3,datatype="pdf",ymin=5*10**-8,
+                 sorting_var="Types",type_name="Linker")
+
+
+
+
+
+"""fig.S8 TadDE proximity"""
+file_name="_7_figS8_TadDE proximity.xlsx"
+suppression_freq(basicpath+file_name,"Set29_Proximity_effect_Cycle_supprfreq",sorting_var="Type",type_name="Cycle",
+                 sheet="suppression summary",width=4.5,height=3.6,legend_num=4,datatype="pdf",ymin=5*10**-8)
 
 
 """fig.S8 TadDE proximity """
@@ -275,20 +275,13 @@ for i in [0,1]:
                                     sheet="suppression summary",sample1=sample_type[i],hue1=hue_type[0],sample2=sample_type[i],hue2=hue_type[1],mod="ttest",hypothesis_mod="two-sided")
 
 
-# """fig.S9 spacer length"""
-# file_name="_9_figS9_spacer_length.xlsx"
-# suppression_freq(basicpath+file_name,"spacer length",
-#                  sheet="suppression summary",width=7,height=3.6,legend_num=4,datatype="pdf",ymin=10**-6,
-#                  sorting_var="Spacer",type_name="Cycle")
+"""fig.S9 spacer length"""
+file_name="_9_figS9_spacer_length.xlsx"
+suppression_freq(basicpath+file_name,"spacer length",
+                 sheet="suppression summary",width=7,height=3.6,legend_num=4,datatype="pdf",ymin=10**-6,
+                 sorting_var="Spacer",type_name="Cycle")
 
 
 
-
-
-# """fig.S10 mismatch effect"""
-# file_name="_10_figS10_Mismatch_effect.xlsx"
-# suppression_freq(basicpath+file_name,"Set27_gRNAmismatch",
-#                  sheet="suppression summary",width=5,height=3.6,legend_num=4,datatype="pdf",ymin=10**-6,
-#                  sorting_var="Spacer",type_name="Cycle")
 
 

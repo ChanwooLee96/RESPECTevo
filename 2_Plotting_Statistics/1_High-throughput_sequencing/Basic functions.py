@@ -48,7 +48,7 @@ ylim_max=10**0
 outlier=[159,162,165,168,171,201,204,207,210,213,216,219,234,543,546,549,552,553]  ### codon changed position in Phes_codon and will be eliminated 
 
 def NGS_lineplot(mutlist,i_merging_name,merging_filelist,o_filename,
-                 minmax_range=["321","562"], log=True, marker=True, error_style="band", error=lambda x: (x.min(), x.max()), linelist=[], graphrange=[], gap=25, alpha_=1,legend=True, ylim_min=2*10**-5, ylim_max=6*10**-1,
+                 minmax_range=["321","562"], log=True, marker=True, error_style="band", error=("ci",95), linelist=[], graphrange=[], gap=25, alpha_=1,legend=True, ylim_min=2*10**-5, ylim_max=6*10**-1,
                  outlierlist=outlier,typename=type_name, date=Date, width=5.4, height=2.1, color=bluered4,marker_size=5, outtype="png"):
     """
     Lineplot generating function
@@ -166,7 +166,7 @@ def NGS_lineplot(mutlist,i_merging_name,merging_filelist,o_filename,
     ax.tick_params(axis='both', which='major')
     ax.set_xlabel("position",fontdict=font_label, labelpad=10)
     ax.set_ylabel(ylabel,fontdict=font_label, labelpad=10)           
-    ax.set_xlim(list(map(int,minmax_range)))
+    ax.set_xlim(list(map(int,graphrange)))
     if log:
         ax.set(yscale="log")
         ax.set_ylabel("LOG("+ylabel+")",fontdict=font_label, labelpad=10)

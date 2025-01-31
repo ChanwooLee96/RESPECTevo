@@ -165,7 +165,7 @@ def NGS_lineplot(mutlist,i_merging_name,merging_filelist,o_filename,
     ax.tick_params(axis='both', which='major')
     ax.set_xlabel("position",fontdict=font_label, labelpad=10)
     ax.set_ylabel(ylabel,fontdict=font_label, labelpad=10)           
-    ax.set_xlim(list(map(int,minmax_range)))
+    ax.set_xlim(list(map(int,graphrange)))
     if log:
         ax.set(yscale="log")
         ax.set_ylabel("LOG("+ylabel+")",fontdict=font_label, labelpad=10)
@@ -637,7 +637,7 @@ Wholelist_MutgRNA=[[["4_4"],["1_1","1_2","1_3"]],  ##Mis4
                    [["5_4"],["4_1","4_2","4_3"]]   ##NocrRNA
                    ]  
 
-### point plot Fig3E figS10CD###
+### point plot Fig3E figS10BC###
 namingdict={0:"Mis4",1:"Mis34",2:"Mis70",3:"Mis34to39",4:"Mut34_70",5:"NoMis",6:"NocrRNA"}
 minmax_range_dict={0:["321","562"],1:["321","562"],2:["321","562"],3:["321","562"],4:["321","562"],5:["321","562"],6:["321","562"]}
 pheSrange=[300,575]
@@ -662,7 +662,7 @@ for count0 in range(0,len(Wholelist_MutgRNA)):
 
 
 
-### Boxplot targeted region Fig3F figS10E###
+### Boxplot targeted region Fig3F figS10D###
 filelist_temp=[["3_4","3_5","3_6"],["1_1","1_2","1_3"],["1_4","1_5","1_6"],["2_1","2_2","2_3"],["3_1","3_2","3_3"],["2_4","2_5","2_6"],["4_1","4_2","4_3"]]
 range__list=[[443,547],[443,547],[443,547],[443,547],[443,547],[443,547],[321,562]]
 num=0
@@ -682,7 +682,7 @@ NGSstats_v2(["CtoT","GtoA","TtoC","AtoG"],namelist,filelist_temp,"Set27_mismtach
 NGSstats_average_mutfreq(["CtoT","GtoA","TtoC","AtoG"],namelist,filelist_temp,"Set27_mismtach_cyc4_mutrange",rangelist=range__list,rangemod="different")
 
 
-### Boxplot untargeted region figS10F###
+### Boxplot untargeted region figS10E###
 filelist_temp=[["3_4","3_5","3_6"],["1_1","1_2","1_3"],["1_4","1_5","1_6"],["2_1","2_2","2_3"],["3_1","3_2","3_3"],["2_4","2_5","2_6"]]
 
 num=0
