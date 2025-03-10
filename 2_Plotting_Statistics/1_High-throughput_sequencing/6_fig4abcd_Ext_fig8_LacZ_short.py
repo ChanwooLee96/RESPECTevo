@@ -7,7 +7,7 @@ from datetime import datetime
 from scipy import stats
 Date=str(datetime.today().strftime("%Y%m%d"))[2:]
 
-####Global variables ####
+####  Global variables  ####
 main_title='NGS data result'
 ylabel='Frequency'
 ylabel2='Log(Frquency ratio)'
@@ -22,6 +22,7 @@ font_label= {'size': 12,
              'color'  : 'Gray',
              'verticalalignment': 'baseline',
              'horizontalalignment': 'center'}
+
 
 colors6=["#EB697F","#FF8E7A","#986D81","#FFB37A","#FFB3DA","#FF5EB1"]
 bluered4=["#357FC2","#D23064","#76CAF2","#E37298"]
@@ -73,7 +74,7 @@ def NGS_lineplot(mutlist,i_merging_name,merging_filelist,o_filename,
         print("the number of given files is not matched")
         exit()
         
-    #### Xposition frequency in files, would be merged in one file,with given mutation type#####s
+    #### Xposition frequency in files, would be merged in one file,with given mutation type#####
     merged_df=pd.DataFrame()
     for count in range(0,len_namelist):
         ### Melting, Merging files in merginglist######
@@ -134,7 +135,6 @@ def NGS_lineplot(mutlist,i_merging_name,merging_filelist,o_filename,
                 linewidth=0,
                 palette=color
                 )
-
     if linelist != []:
         for i in linelist:
             ax.axvline(x=i,linestyle='dashed',color="#C2A239",alpha=1,linewidth=1)
@@ -145,7 +145,8 @@ def NGS_lineplot(mutlist,i_merging_name,merging_filelist,o_filename,
     for lines in line.get_lines():
 
         lines.set_markeredgecolor("gray")
-        lines.set_markeredgewidth('0.1')
+        lines.set_markeredgewidth('0')
+        # lines.set_markerfacecolor("none")
 
     len_mutlist=len(mutlist)
 
@@ -489,8 +490,8 @@ def NGSmutation_ratio_v2(mutlist,namelist,i_filelist,o_filename,rangelist,typena
         merged_df.to_excel(writer, sheet_name="Raw data") # Raw data
         temp_result_df.to_excel(writer, sheet_name="n number_average") # average result
         writer.close()            
+    
             
-
         ### making graph ###
         if rangemod=="same":
             File_name=f"{date}_{o_filename}_ratio_{min_range}-{max_range}_{muttype}.{outtype}"
@@ -685,8 +686,8 @@ def NGSstats_v2(mutlist, namelist,i_filelist,o_filename,rangelist,rangemod="same
         test_result_df.to_excel(writer, sheet_name="Sheet1") # test result
         writer.close()          
         
-        
-def NGSstats_average_mutfreq(mutlist, namelist,i_filelist,o_filename,rangelist,rangemod="same",mergemod="average",outlierlist=outlier,typename=type_name,date=Date): #measuring average mutation frequency
+               
+def NGSstats_average_mutfreq(mutlist, namelist,i_filelist,o_filename,rangelist,rangemod="same",mergemod="average",outlierlist=outlier,typename=type_name,date=Date):  ##measuring average frequency
     if mutlist==All_mut_list: ###setting naming for mutation list I would use
         muttype="All"
     else:
@@ -800,111 +801,156 @@ def NGSstats_average_mutfreq(mutlist, namelist,i_filelist,o_filename,rangelist,r
     temp_result_df.to_excel(writer, sheet_name="average statistics") # average result
     writer.close()
     print("statistics done")  
-           
+    
 
 
 
-basicpath="RESPECTevo-Code_Rawdata/2_Plotting_Statistics/1_High-throughput_sequencing/1_fig1_figS5_pmCDA_L16_casB_rawdata/"
+basicpath="RESPECTevo-Code_Rawdata/2_Plotting_Statistics/1_High-throughput_sequencing/6_fig4abcd_Ext_fig8_LacZ_short_rawdata/"
 
-###  - mutator and + mutator, Empty + 105bp only ###
-Wholelist_mutatortype=[
-                      [["6_3"],["2_1","2_2","2_3"]],  ##16CasB_105bp  +mutator +crRNA
-                      [["6_5"],["5_1","5_2","5_3"]],  ##16CasB_empty  +mutator -crRNA
-                      [["6_6"],["5_4","5_5","5_6"]],  ##All_empty   -mutator -crRNA
-                      [["7_3"],["4_1","4_2","4_3"]] ##Cascadeonly_105bp  -mutator +crRNA
-                      ] 
-namingdict={0:"+mutator +crRNA",1:"+mutator -crRNA",2:"-mutator -crRNA",3:"-mutator +crRNA"}
-minmax_range_dict={0:["321","562"],1:["321","562"],2:["321","562"],3:["321","562"]}
-pheSrange=[300,575]
+"""###LacZ targeting, short length###"""
+### pointplot fig4b ###
+Wholelist_lacZ=[
+                [["5_5"],["3_1","3_2","3_3"]],  ##B1T1
+                [["5_6"],["3_4","3_5","3_6"]],  ##B2T1
+                [["6_1"],["4_1","4_2","4_3"]],  ##B1B3
+                ]  
+namingdict={0:"B1T1",1:"B2T1",2:"B1B3"}
+minmax_range_dict={0:["1458","1701"],1:["1458","1701"],2:["1458","1701"]}
+B1T1range=[1450,1725]
 
-##pointplot (Fig1C)###
-graphrange_dict={0:pheSrange,1:pheSrange,2:pheSrange,3:pheSrange}
-linelist_dict={0:[443,547],1:[],2:[],3:[443,547]}
-namelist=["Cycle 0","Cycle 8"]
-for count0 in range(0,len(Wholelist_mutatortype)):
-    filelist_temp=Wholelist_mutatortype[count0]
+graphrange_dict={0:B1T1range,1:B1T1range,2:B1T1range}
+linelist_dict={0:[1466,1570,1593,1697],1:[1526,1630,1593,1697],2:[1466,1570,1589,1693]}
+namelist=["Cycle0","Cycle4"]
+for count0 in range(0,len(Wholelist_lacZ)):
+    filelist_temp=Wholelist_lacZ[count0]
     for count in range(0,len(filelist_temp)):
         for count2 in range(0,len(filelist_temp[count])):
-            filelist_temp[count][count2]=basicpath+f"_Exp8-{filelist_temp[count][count2]}.xlsx"
+            filelist_temp[count][count2]=basicpath+f"_Exp12-{filelist_temp[count][count2]}.xlsx"
             
-    NGS_lineplot(["CtoT"],namelist,filelist_temp,f"Set19-2_concept_study_{namingdict[count0]}",
-                log=True,minmax_range=minmax_range_dict[count0],color=blue1,graphrange=graphrange_dict[count0],linelist=linelist_dict[count0],
-                typename="Mutation",marker=True,alpha_=0.9,legend=False,error_style="bars",outtype="pdf")
-    
-    NGS_lineplot(["GtoA"],namelist,filelist_temp,f"Set19-2_concept_study_{namingdict[count0]}",
-                log=True,minmax_range=minmax_range_dict[count0],color=blue2,graphrange=graphrange_dict[count0],linelist=linelist_dict[count0],
-                typename="Mutation",marker=True,alpha_=0.9,legend=False,error_style="bars",outtype="pdf")
+    NGS_lineplot(["CtoT","AtoG"],namelist,filelist_temp,f"Set28_LacZ_{namingdict[count0]}",
+                log=True,minmax_range=minmax_range_dict[count0],color=bluered2_1,graphrange=graphrange_dict[count0],linelist=linelist_dict[count0],
+                typename="Mutation",marker=True,alpha_=0.9,error_style="bars",legend=False,outtype="pdf",outlierlist=[])
+    plt.close()
+    NGS_lineplot(["GtoA","TtoC"],namelist,filelist_temp,f"Set28_LacZ_{namingdict[count0]}",
+                log=True,minmax_range=minmax_range_dict[count0],color=bluered2_2,graphrange=graphrange_dict[count0],linelist=linelist_dict[count0],
+                typename="Mutation",marker=True,alpha_=0.9,error_style="bars",legend=False,outtype="pdf",outlierlist=[])
     plt.close()
 
 
 
-### targeted region (Fig1D)###
-filelist_temp=[["2_1","2_2","2_3"],["5_1","5_2","5_3"],["4_1","4_2","4_3"],["5_4","5_5","5_6"]]
-range__list=[[443,547],[347,547],[443,547],[347,547]]
+
+### Boxplot targeted range, with one crRNA  Extended fig8###
+filelist_temp=[["1_1","1_2","1_3"],["1_4","1_5","1_6"],["2_1","2_2","2_3"],["2_4","2_5","2_6"],["4_4","4_5","4_6"]]
+
+range__list=[[1466,1570],[1526,1630],[1589,1693],[1593,1697],[1458,1701]]
 num=0
 for i in filelist_temp:
     num1=0
     for j in filelist_temp[num]:
-        filelist_temp[num][num1]=basicpath+f"_Exp8-{filelist_temp[num][num1]}.xlsx"
+        filelist_temp[num][num1]=basicpath+f"_Exp12-{filelist_temp[num][num1]}.xlsx"
         num1=num1+1
-    num=num+1
-namelist=["105+mut","empty+mut","105-mut","empty-mut"]
-NGSmutation_frequency_v2(["CtoT"],namelist,filelist_temp,"Set19-2_+-mutator_Cyc8_105bpsummary_average_mutrange",range__list,width=3,graphmod="Box",color_list=blue1,legend=False,rangemod="different",outtype="pdf")
-NGSmutation_frequency_v2(["GtoA"],namelist,filelist_temp,"Set19-2_+-mutator_Cyc8_105bp_summary_average_mutrange",range__list,width=3,graphmod="Box",color_list=blue2,legend=False,rangemod="different",outtype="pdf")
-NGSstats_v2(["CtoT","GtoA"],namelist,filelist_temp,"Set19-2_+-mutator_cyc8_105bp_mutrange",rangelist=range__list,rangemod="different",hypothesis_mod="two-sided")
-NGSstats_average_mutfreq(All_mut_list,namelist,filelist_temp,"Set19-2_+-mutator_cyc8_105bp_mutrange",rangelist=range__list,rangemod="different")
+    num=num+1   
+namelist=["B1","B2","B3","T1","nocrRNA"] 
 
+NGSmutation_frequency_v2(["CtoT"],namelist,filelist_temp,"Set28_LacZ_oneRNA_mutrange",range__list,width=3,graphmod="Box",color_list=blue1,legend=False,rangemod="different",outtype="pdf",outlierlist=[])
+NGSmutation_frequency_v2(["GtoA"],namelist,filelist_temp,"Set28_LacZ_oneRNA_mutrange",range__list,width=3,graphmod="Box",color_list=blue2,legend=False,rangemod="different",outtype="pdf",outlierlist=[])
+NGSmutation_frequency_v2(["AtoG"],namelist,filelist_temp,"Set28_LacZ_oneRNA_mutrange",range__list,width=3,graphmod="Box",color_list=red1,legend=False,rangemod="different",outtype="pdf",outlierlist=[])
+NGSmutation_frequency_v2(["TtoC"],namelist,filelist_temp,"Set28_LacZ_oneRNA_mutrange",range__list,width=3,graphmod="Box",color_list=red2,legend=False,rangemod="different",outtype="pdf",outlierlist=[])
 
-### untargeted region (fig.S5A)###
+NGSstats_v2(["CtoT","GtoA","TtoC","AtoG"],namelist,filelist_temp,"Set28_LacZ_oneRNA_mutrange_ref4",rangelist=range__list,rangemod="different",hypothesis_mod="two-sided",outlierlist=[],ref_num=4)
+NGSstats_average_mutfreq(All_mut_list,namelist,filelist_temp,"Set28_LacZ_oneRNA_mutrange",rangelist=range__list,outlierlist=[],rangemod="different")
 
-filelist_temp=[["2_1","2_2","2_3"],["4_1","4_2","4_3"]]
-range__list=[[321,442,548,562],[321,442,548,562]]
+filelist_temp=[["5_1","5_1","5_1"],["5_2","5_2","5_2"],["5_3","5_3","5_3"],["5_4","5_4","5_4"],["6_2","6_2","6_2"]]
+
+range__list=[[1466,1570],[1526,1630],[1589,1693],[1593,1697],[1458,1701]]
 num=0
 for i in filelist_temp:
     num1=0
     for j in filelist_temp[num]:
-        filelist_temp[num][num1]=basicpath+f"_Exp8-{filelist_temp[num][num1]}.xlsx"
+        filelist_temp[num][num1]=basicpath+f"_Exp12-{filelist_temp[num][num1]}.xlsx"
         num1=num1+1
-    num=num+1
-namelist=["105+mut","105-mut"]
-NGSmutation_frequency_v2(["CtoT"],namelist,filelist_temp,"Set19-2_+-mutator_Cyc8_105bpsummary_average_mutrange_X",range__list,width=2.1,graphmod="Box",color_list=blue1,legend=False,rangemod="different",outtype="pdf")
-NGSmutation_frequency_v2(["GtoA"],namelist,filelist_temp,"Set19-2_+-mutator_Cyc8_105bp_summary_average_mutrange_X",range__list,width=2.1,graphmod="Box",color_list=blue2,legend=False,rangemod="different",outtype="pdf")
-NGSstats_average_mutfreq(["CtoT","GtoA"],namelist,filelist_temp,"Set19-2_+-mutator_Cyc8_105bp_summary_average_mutrange_X",rangelist=range__list,rangemod="different")
+    num=num+1   
+namelist=["B1","B2","B3","T1","nocrRNA"] 
+NGSstats_average_mutfreq(All_mut_list,namelist,filelist_temp,"Set28_LacZ_oneRNA_mutrange_cycle0",rangelist=range__list,outlierlist=[],rangemod="different")
 
 
 
-### boxplot by cycle  (fig1E, figS5B)##
-filelist_temp=[["6_3"],["6_3"],["8_1","8_2","8_3"],["8_1","8_2","8_3"],["8_4","8_5","8_6"],["8_4","8_5","8_6"],["9_1","9_2","9_3"],["9_1","9_2","9_3"],["9_4","9_5","9_6"],["9_4","9_5","9_6"]]
+
+### Boxplot Untargeted range, with one crRNA  Extended fig8 ###
+filelist_temp=[["1_1","1_2","1_3"],["1_4","1_5","1_6"],["2_1","2_2","2_3"],["2_4","2_5","2_6"]]
+
+range__list=[[1458,1465,1571,1701],[1458,1525,1631,1701],[1458,1588,1694,1701],[1458,1592,1698,1701]]
 num=0
 for i in filelist_temp:
     num1=0
     for j in filelist_temp[num]:
-        filelist_temp[num][num1]=basicpath+f"_Exp8-{filelist_temp[num][num1]}.xlsx"
+        filelist_temp[num][num1]=basicpath+f"_Exp12-{filelist_temp[num][num1]}.xlsx"
         num1=num1+1
-    num=num+1
-namelist=["Cyc0mut","Cyc0mutX","Cyc1mut","Cyc1mutX","Cyc2mut","Cyc2mutX","Cyc4mut","Cyc4mutX","Cyc6mut","Cyc6mutX"]
-range__list=[[443,547],[321,442,548,562],[443,547],[321,442,548,562],[443,547],[321,442,548,562],[443,547],[321,442,548,562],[443,547],[321,442,548,562]]
-    
-NGSmutation_frequency_v2(["CtoT"],namelist,filelist_temp,"Set19-2_Pm-16-CasB_Cycle_summary_average_mutrange_both",width=5.25,graphmod="Box",color_list=blue1,legend=False,outtype="pdf",rangelist=range__list,rangemod="different")
-NGSmutation_frequency_v2(["GtoA"],namelist,filelist_temp,"Set19-2_Pm-16-CasB_Cycle_summary_average_mutrange_both",width=5.25,graphmod="Box",color_list=blue2,legend=False,outtype="pdf",rangelist=range__list,rangemod="different")
-for ref in [0,2,4,6,8]:
-    NGSstats_v2(["CtoT","GtoA"],namelist,filelist_temp,f"Set19-2_pm-16-casB_cycsummary_mutrange_both_ref{ref}",rangelist=range__list,rangemod="different",hypothesis_mod="two-sided",ref_num=ref)
-NGSstats_average_mutfreq(["CtoT","GtoA"],namelist,filelist_temp,f"Set19-2_pm-16-casB_cycsummary_mutrange_both",rangelist=range__list,rangemod="different")
+    num=num+1   
+namelist=["B1","B2","B3","T1"]
+NGSmutation_frequency_v2(["CtoT"],namelist,filelist_temp,"Set28_LacZ_oneRNA_mutrange_X",range__list,width=3,graphmod="Box",color_list=blue1,legend=False,rangemod="different",outtype="pdf",outlierlist=[])
+NGSmutation_frequency_v2(["GtoA"],namelist,filelist_temp,"Set28_LacZ_oneRNA_mutrange_X",range__list,width=3,graphmod="Box",color_list=blue2,legend=False,rangemod="different",outtype="pdf",outlierlist=[])
+NGSmutation_frequency_v2(["AtoG"],namelist,filelist_temp,"Set28_LacZ_oneRNA_mutrange_X",range__list,width=3,graphmod="Box",color_list=red1,legend=False,rangemod="different",outtype="pdf",outlierlist=[])
+NGSmutation_frequency_v2(["TtoC"],namelist,filelist_temp,"Set28_LacZ_oneRNA_mutrange_X",range__list,width=3,graphmod="Box",color_list=red2,legend=False,rangemod="different",outtype="pdf",outlierlist=[])
+NGSstats_average_mutfreq(["CtoT","GtoA","TtoC","AtoG"],namelist,filelist_temp,"Set28_LacZ_oneRNA_mutrange_X",rangelist=range__list,outlierlist=[],rangemod="different")
 
 
-
-
-
-###frequency ratio (fig.S5C) ###
-filelist_temp=[["5_4","5_5","5_6"],["2_1","2_2","2_3"],["5_1","5_2","5_3"],["4_1","4_2","4_3"]]
-range__list=[[443,547],[347,547],[443,547]]
+## Boxplot frequency ratio, with one crRNA Extended fig8 ###
+filelist_temp=[["4_4","4_5","4_6"],["1_1","1_2","1_3"],["1_4","1_5","1_6"],["2_1","2_2","2_3"],["2_4","2_5","2_6"]]
+range__list=[[1466,1570],[1526,1630],[1589,1693],[1593,1697]]
 num=0
 for i in filelist_temp:
     num1=0
     for j in filelist_temp[num]:
-        filelist_temp[num][num1]=basicpath+f"_Exp8-{filelist_temp[num][num1]}.xlsx"
+        filelist_temp[num][num1]=basicpath+f"_Exp12-{filelist_temp[num][num1]}.xlsx"
         num1=num1+1
     num=num+1
-namelist=["105+mut","empty+mut","105-mut"]
-NGSmutation_ratio_v2(All_mut_list,namelist,filelist_temp,"Set19-2_+-mutator_cyc8_summary_average_mutrange",range__list,width=9,legend=True,rangemod="different",outtype="pdf")
+namelist=["B1","B2","B3","T1"]
+NGSmutation_ratio_v2(All_mut_list,namelist,filelist_temp,"Set28_LacZ_oneRNA_mutrange",range__list,width=9,legend=True,rangemod="different",outtype="pdf")
+
+
+# Boxplot B1 range fig4c###
+filelist_temp=[["4_4","4_5","4_6"],["1_1","1_2","1_3"],["1_4","1_5","1_6"],["2_1","2_2","2_3"],["2_4","2_5","2_6"],["4_1","4_2","4_3"],["3_1","3_2","3_3"],["3_4","3_5","3_6"]]
+num=0
+for i in filelist_temp:
+    num1=0
+    for j in filelist_temp[num]:
+        filelist_temp[num][num1]=basicpath+f"_Exp12-{filelist_temp[num][num1]}.xlsx"
+        num1=num1+1
+    num=num+1   
+
+namelist=["nocrRNA","B1","B2","B3","T1","B1B3","B1T1","B2T1"]
+
+NGSmutation_frequency_v2(["CtoT"],namelist,filelist_temp,"Set28_LacZ_summary_B1range",[1466,1570],width=3.3,graphmod="Box",color_list=blue1,legend=False,rangemod="same",outtype="pdf",outlierlist=[])
+NGSmutation_frequency_v2(["GtoA"],namelist,filelist_temp,"Set28_LacZ_summary_B1range",[1466,1570],width=3.3,graphmod="Box",color_list=blue2,legend=False,rangemod="same",outtype="pdf",outlierlist=[])
+NGSmutation_frequency_v2(["AtoG"],namelist,filelist_temp,"Set28_LacZ_summary_B1range",[1466,1570],width=3.3,graphmod="Box",color_list=red1,legend=False,rangemod="same",outtype="pdf",outlierlist=[])
+NGSmutation_frequency_v2(["TtoC"],namelist,filelist_temp,"Set28_LacZ_summary_B1range",[1466,1570],width=3.3,graphmod="Box",color_list=red2,legend=False,rangemod="same",outtype="pdf",outlierlist=[])
+
+NGSstats_v2(["CtoT","GtoA","TtoC","AtoG"],namelist,filelist_temp,"Set28_LacZ_B1range_ref1",rangelist=[1466,1570],rangemod="same",hypothesis_mod="two-sided",outlierlist=[],ref_num=1)
+NGSstats_v2(["CtoT","GtoA","TtoC","AtoG"],namelist,filelist_temp,"Set28_LacZ_B1range_ref2",rangelist=[1466,1570],rangemod="same",hypothesis_mod="two-sided",outlierlist=[],ref_num=2)
+NGSstats_average_mutfreq(["CtoT","GtoA","TtoC","AtoG"],namelist,filelist_temp,"Set28_LacZ_B1range",rangelist=[1466,1570],outlierlist=[],rangemod="same")
+
+
+
+
+## Boxplot B3-T1 range fig4d ###
+filelist_temp=[["4_4","4_5","4_6"],["1_1","1_2","1_3"],["1_4","1_5","1_6"],["2_1","2_2","2_3"],["2_4","2_5","2_6"],["4_1","4_2","4_3"],["3_1","3_2","3_3"],["3_4","3_5","3_6"]]
+num=0
+for i in filelist_temp:
+    num1=0
+    for j in filelist_temp[num]:
+        filelist_temp[num][num1]=basicpath+f"_Exp12-{filelist_temp[num][num1]}.xlsx"
+        num1=num1+1
+    num=num+1   
+namelist=["nocrRNA","B1","B2","B3","T1","B1B3","B1T1","B2T1"]
+NGSmutation_frequency_v2(["CtoT"],namelist,filelist_temp,"Set28_LacZ_summary_B3T1range",[1589,1697],width=3.3,graphmod="Box",color_list=blue1,legend=False,rangemod="same",outtype="pdf",outlierlist=[])
+NGSmutation_frequency_v2(["GtoA"],namelist,filelist_temp,"Set28_LacZ_summary_B3T1range",[1589,1697],width=3.3,graphmod="Box",color_list=blue2,legend=False,rangemod="same",outtype="pdf",outlierlist=[])
+NGSmutation_frequency_v2(["AtoG"],namelist,filelist_temp,"Set28_LacZ_summary_B3T1range",[1589,1697],width=3.3,graphmod="Box",color_list=red1,legend=False,rangemod="same",outtype="pdf",outlierlist=[])
+NGSmutation_frequency_v2(["TtoC"],namelist,filelist_temp,"Set28_LacZ_summary_B3T1range",[1589,1697],width=3.3,graphmod="Box",color_list=red2,legend=False,rangemod="same",outtype="pdf",outlierlist=[])
+
+NGSstats_v2(["CtoT","GtoA","TtoC","AtoG"],namelist,filelist_temp,"Set28_LacZ_B3T1range_ref2",rangelist=[1589,1697],rangemod="same",hypothesis_mod="two-sided",outlierlist=[],ref_num=2)
+NGSstats_v2(["CtoT","GtoA","TtoC","AtoG"],namelist,filelist_temp,"Set28_LacZ_B3T1range_ref3",rangelist=[1589,1697],rangemod="same",hypothesis_mod="two-sided",outlierlist=[],ref_num=3)
+NGSstats_v2(["CtoT","GtoA","TtoC","AtoG"],namelist,filelist_temp,"Set28_LacZ_B3T1range_ref4",rangelist=[1589,1697],rangemod="same",hypothesis_mod="two-sided",outlierlist=[],ref_num=4)
+
+NGSstats_average_mutfreq(["CtoT","GtoA","TtoC","AtoG"],namelist,filelist_temp,"Set28_LacZ_B3T1range",rangelist=[1589,1697],outlierlist=[],rangemod="same")
 

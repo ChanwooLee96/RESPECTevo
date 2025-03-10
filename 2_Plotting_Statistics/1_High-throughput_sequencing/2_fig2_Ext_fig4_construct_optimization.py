@@ -144,8 +144,7 @@ def NGS_lineplot(mutlist,i_merging_name,merging_filelist,o_filename,
     for lines in line.get_lines():
 
         lines.set_markeredgecolor("gray")
-        lines.set_markeredgewidth('0.1')
-        # lines.set_markerfacecolor("none")
+        lines.set_markeredgewidth('0')
 
     len_mutlist=len(mutlist)
 
@@ -507,7 +506,8 @@ def NGSstats_v2(mutlist, namelist,i_filelist,o_filename,rangelist,rangemod="same
         test_result_df.to_excel(writer, sheet_name="Sheet1") # test result
         writer.close()          
         
- 
+        
+        
 def NGSstats_average_mutfreq(mutlist, namelist,i_filelist,o_filename,rangelist,rangemod="same",mergemod="average",outlierlist=outlier,typename=type_name,date=Date):  ##measuring average frequency
     if mutlist==All_mut_list: ###setting naming for mutation list I would use
         muttype="All"
@@ -623,84 +623,147 @@ def NGSstats_average_mutfreq(mutlist, namelist,i_filelist,o_filename,rangelist,r
     writer.close()
     print("statistics done")  
     
- 
-       
-basicpath="RESPECTevo-Code_Rawdata/2_Plotting_Statistics/1_High-throughput_sequencing/3_fig2E_figS8_TadDE_proximity_rawdata/"       
-        
-"""TadDE proximity effect"""
 
-Wholelist_proximity=[[["11_1"],["9_1","9_2","9_3"]],  ##TadDE-16-CasB 105bp
-                [["11_2"],["9_4","9_5","9_6"]],  ##TadDE-16-CasB empty
-                [["11_3"],["10_1","10_2","10_3"]],  ##TadDE-UGI 105bp
-                [["11_4"],["10_4","10_5","10_6"]],  ##TadDE_UGI empty
-                ]
 
-### point plot figS8A ###
-namingdict={0:"TadDE-16-CasB_105bp",1:"TadDE-16-CasB_empty",2:"TadDEonly_105bp",3:"TadDEonly_empty"}
-minmax_range_dict={0:["321","562"],1:["321","562"],2:["321","562"],3:["321","562"]}
+
+basicpath="RESPECTevo-Code_Rawdata/2_Plotting_Statistics/1_High-throughput_sequencing/2_fig2_Ext_fig4_construct_optimization_rawdata/"
+
+
+""" PmCDA-32-CasB and APOBEC-64-CasC 105bp"""
+namedict={"1-1":"PmCDA-32-CasB_105bp_cyc4-1","1-2":"PmCDA-32-CasB_105bp_cyc4-2","1-3":"PmCDA-32-CasB_105bp_cyc4-3","1-4":"APOBEC-64-CasC_105bp_cyc4-1","1-5":"APOBEC-64-CasC_105bp_cyc4_cyc8-2","1-6":"APOBEC-64-CasC_105bp_cyc4-3" }
+   
+Wholelist_mutatortype=[[["6_1"],["1_1","1_2","1_3"]],  ##PmCDA 32 CasB
+                      [["6_2"],["1_4","1_5","1_6"]]  ##APOBEC64CasC
+                      ]  
+
+namingdict={0:"PmCDA-32-CasB_105bp",1:"APOBEC-64-CasC_105bp"}
+minmax_range_dict={0:["321","562"],1:["321","562"]}
 pheSrange=[300,575]
-graphrange_dict={0:pheSrange,1:pheSrange,2:pheSrange,3:pheSrange}
-linelist_dict={0:[443,547],1:[],2:[443,547],3:[]}
-namelist=["Cycle0","Cycle4"]
-for count0 in range(0,len(Wholelist_proximity)):
-    filelist_temp=Wholelist_proximity[count0]
+
+###poiint plot fig 2b,pmcDA-APOBEC ###
+graphrange_dict={0:pheSrange,1:pheSrange}
+linelist_dict={0:[443,547],1:[443,547]}
+namelist=["Cycle 0","Cycle 4"]
+for count0 in range(0,len(Wholelist_mutatortype)):
+    filelist_temp=Wholelist_mutatortype[count0]
     for count in range(0,len(filelist_temp)):
         for count2 in range(0,len(filelist_temp[count])):
-            filelist_temp[count][count2]=basicpath+f"_Exp13-{filelist_temp[count][count2]}.xlsx"
+            filelist_temp[count][count2]=basicpath+f"_Exp9-{filelist_temp[count][count2]}.xlsx"
             
-    NGS_lineplot(["CtoT","AtoG"],namelist,filelist_temp,f"Set29_Proximity_effect_{namingdict[count0]}",
+    NGS_lineplot(["CtoT","AtoG"],namelist,filelist_temp,f"Set21_Optimization_{namingdict[count0]}",
                 log=True,minmax_range=minmax_range_dict[count0],color=bluered2_1,graphrange=graphrange_dict[count0],linelist=linelist_dict[count0],
-                typename="Mutation",marker=True,alpha_=0.9,error_style="bars",legend=False,outtype="pdf")
-    plt.close()
-    NGS_lineplot(["GtoA","TtoC"],namelist,filelist_temp,f"Set29_Proximity_effect_{namingdict[count0]}",
+                typename="Mutation",marker=True,alpha_=0.9,legend=False,error_style="bars",outtype="pdf")
+    
+    NGS_lineplot(["GtoA","TtoC"],namelist,filelist_temp,f"Set21_Optimization_{namingdict[count0]}",
                 log=True,minmax_range=minmax_range_dict[count0],color=bluered2_2,graphrange=graphrange_dict[count0],linelist=linelist_dict[count0],
-                typename="Mutation",marker=True,alpha_=0.9,error_style="bars",legend=False,outtype="pdf")
+                typename="Mutation",marker=True,alpha_=0.9,legend=False,error_style="bars",outtype="pdf")
     plt.close()
 
 
-
-
-
-# ## Boxplot targeted region fig2E##
-
-filelist_temp=[["9_1","9_2","9_3"],["9_4","9_5","9_6"],["10_1","10_2","10_3"],["10_4","10_5","10_6"]]
-range__list=[[443,547],[321,562],[443,547],[321,562]]
+### boxplot fig2c pmcDA-APOBEC ###
+filelist_temp=[["1_1","1_2","1_3"],["1_4","1_5","1_6"]]
 num=0
 for i in filelist_temp:
     num1=0
     for j in filelist_temp[num]:
-        filelist_temp[num][num1]=basicpath+f"_Exp13-{filelist_temp[num][num1]}.xlsx"
+        filelist_temp[num][num1]=basicpath+f"_Exp9-{filelist_temp[num][num1]}.xlsx"
         num1=num1+1
-    num=num+1   
+    num=num+1
+namelist=["PmCDA-32-CasB","APOBEC-64-CasC"]
+
+### targeted region fig2c ### 
+NGSmutation_frequency_v2(["CtoT"],namelist,filelist_temp,"Set21_pmAPO_opt_Cyc4_summary_average_mutrange",[443,547],width=1.8,graphmod="Box",color_list=blue1,legend=False,outtype="pdf")
+NGSmutation_frequency_v2(["GtoA"],namelist,filelist_temp,"Set21_pmAPO_opt_Cyc4_summary_average_mutrange",[443,547],width=1.8,graphmod="Box",color_list=blue2,legend=False,outtype="pdf")
+NGSmutation_frequency_v2(["AtoG"],namelist,filelist_temp,"Set21_pmAPO_opt_Cyc4_summary_average_mutrange",[443,547],width=1.8,graphmod="Box",color_list=red1,legend=False,outtype="pdf")
+NGSmutation_frequency_v2(["TtoC"],namelist,filelist_temp,"Set21_pmAPO_opt_Cyc4_summary_average_mutrange",[443,547],width=1.8,graphmod="Box",color_list=red2,legend=False,outtype="pdf")
+### untargeted region extended fig4 ###
+NGSmutation_frequency_v2(["CtoT"],namelist,filelist_temp,"Set21_pmAPO_opt_Cyc4_summary_average_mutrange_X",[321,442,548,562],width=1.8,graphmod="Box",color_list=blue1,legend=False,outtype="pdf")
+NGSmutation_frequency_v2(["GtoA"],namelist,filelist_temp,"Set21_pmAPO_opt_Cyc4_summary_average_mutrange_X",[321,442,548,562],width=1.8,graphmod="Box",color_list=blue2,legend=False,outtype="pdf")
+NGSmutation_frequency_v2(["AtoG"],namelist,filelist_temp,"Set21_pmAPO_opt_Cyc4_summary_average_mutrange_X",[321,442,548,562],width=1.8,graphmod="Box",color_list=red1,legend=False,outtype="pdf")
+NGSmutation_frequency_v2(["TtoC"],namelist,filelist_temp,"Set21_pmAPO_opt_Cyc4_summary_average_mutrange_X",[321,442,548,562],width=1.8,graphmod="Box",color_list=red2,legend=False,outtype="pdf")
+
+NGSstats_v2(["CtoT","GtoA","TtoC","AtoG"],namelist,filelist_temp,"Set21_pmAPO_opt_Cyc4_mutrange",rangelist=[443,547],rangemod="same",hypothesis_mod="two-sided",ref_num=0)
+NGSstats_average_mutfreq(["CtoT","GtoA","TtoC","AtoG"],namelist,filelist_temp,"Set21_pmAPO_opt_Cyc4_mutrange",rangelist=[443,547],rangemod="same")
+NGSstats_average_mutfreq(["CtoT","GtoA","TtoC","AtoG"],namelist,filelist_temp,"Set21_pmAPO_opt_Cyc4_mutrange_X",rangelist=[321,442,548,562],rangemod="same")
+
+
+
+
+"""TadDE series"""
+namedict={"2-1":"TadDE-16-CasB cyc4-1","2-2":"TadDE-16-CasB cyc4-2","2-3":"TadDE-16-CasB cyc4-3","2-4":"TadDE-16-CasC cyc4-1","2-5":"TadDE-16-CasC cyc4-2","2-6":"TadDE-16-CasC cyc4-3",
+          "3-1":"TadDE-32-CasB cyc4-1","3-2":"TadDE-32-CasB cyc4-2","3-3":"TadDE-32-CasB cyc4-3","3-4":"TadDE-32-CasC cyc4-1","3-5":"TadDE-32-CasB cyc4-2","3-6":"TadDE-32-CasB cyc4-3",
+          "4-1":"TadDE-64-CasB cyc4-1","4-2":"TadDE-64-CasB cyc4-2","4-3":"TadDE-64-CasB cyc4-3","4-4":"TadDE-64-CasC cyc4-1","4-5":"TadDE-64-CasC cyc4-2","4-6":"TadDE-64-CasC cyc4-3",
+          "5-1":"TadDE-16-CasB cyc0","5-2":"TadDE-32-CasB cyc0","5-3":"TadDE-64-CasB cyc0","5-4":"TadDE-16-CasC cyc0","5-5":"TadDE-32-CasC cyc0","5-6":"TadDE-64-CasC cyc0"}
+
         
-namelist=["TadDE-16-CasB_105bp","TadDE-16-CasB_empty","TadDE_only_105bp","TadDE_only_empty"]
+Wholelist_mutatortype=[[["5_1"],["2_1","2_2","2_3"]],  ##TadDE16CasB
+                      [["5_2"],["2_4","2_5","2_6"]],  ##TadDE16CasC
+                      [["5_3"],["3_1","3_2","3_3"]],  ##TadDE32CasB
+                      [["5_4"],["3_4","3_5","3_6"]],  ##TadDE32CasC
+                      [["5_5"],["4_1","4_2","4_3"]],  ##TadDE64CasB
+                      [["5_6"],["4_4","4_5","4_6"]],  ##TadDE64CasC
+                      ]  
 
-NGSmutation_frequency_v2(["CtoT"],namelist,filelist_temp,"Set29_TadDE_proximity_Cyc4_summary_average_mutrange",range__list,width=2.4,graphmod="Box",color_list=blue1,legend=False,rangemod="different",outtype="pdf")
-NGSmutation_frequency_v2(["GtoA"],namelist,filelist_temp,"Set29_TadDE_proximity_Cyc4_summary_average_mutrange",range__list,width=2.4,graphmod="Box",color_list=blue2,legend=False,rangemod="different",outtype="pdf")
-NGSmutation_frequency_v2(["AtoG"],namelist,filelist_temp,"Set29_TadDE_proximity_Cyc4_summary_average_mutrange",range__list,width=2.4,graphmod="Box",color_list=red1,legend=False,rangemod="different",outtype="pdf")
-NGSmutation_frequency_v2(["TtoC"],namelist,filelist_temp,"Set29_TadDE_proximity_Cyc4_summary_average_mutrange",range__list,width=2.4,graphmod="Box",color_list=red2,legend=False,rangemod="different",outtype="pdf")
 
-NGSstats_v2(["CtoT","GtoA","TtoC","AtoG"],namelist,filelist_temp,"Set29_TadDE_proximity_Cyc4_mutrange_ref0",rangelist=range__list,rangemod="different",hypothesis_mod="two-sided",ref_num=0)
-NGSstats_v2(["CtoT","GtoA","TtoC","AtoG"],namelist,filelist_temp,"Set29_TadDE_proximity_Cyc4_mutrange_ref2",rangelist=range__list,rangemod="different",hypothesis_mod="two-sided",ref_num=2)
-NGSstats_average_mutfreq(["CtoT","GtoA","TtoC","AtoG"],namelist,filelist_temp,"Set29_TadDE_proximity_Cyc4_mutrange",rangelist=range__list,rangemod="different")
+### point plot fig2b, extended fig4###
+namingdict={0:"TadDE-16-CasB",1:"TadDE-16-CasC",2:"TadDE-32-CasB",3:"TadDE-32-CasC",4:"TadDE-64-CasB",5:"TadDE-64-CasC"}
+minmax_range_dict={0:["321","562"],1:["321","562"],2:["321","562"],3:["321","562"],4:["321","562"],5:["321","562"]}
+pheSrange=[300,575]
 
-### Boxplot untargeted region figS8B####
-filelist_temp=[["9_1","9_2","9_3"],["10_1","10_2","10_3"]]
+graphrange_dict={0:pheSrange,1:pheSrange,2:pheSrange,3:pheSrange,4:pheSrange,5:pheSrange}
+linelist_dict={0:[443,547],1:[443,547],2:[443,547],3:[443,547],4:[443,547],5:[443,547]}
+namelist=["Cycle 0","Cycle 4"]
+for count0 in range(0,len(Wholelist_mutatortype)):
+    filelist_temp=Wholelist_mutatortype[count0]
+    for count in range(0,len(filelist_temp)):
+        for count2 in range(0,len(filelist_temp[count])):
+            filelist_temp[count][count2]=basicpath+f"_Exp9-{filelist_temp[count][count2]}.xlsx"
+            
+    NGS_lineplot(["CtoT","AtoG"],namelist,filelist_temp,f"Set24_Mutator_optimization_{namingdict[count0]}",
+                log=True,minmax_range=minmax_range_dict[count0],color=bluered2_1,graphrange=graphrange_dict[count0],linelist=linelist_dict[count0],
+                typename="Mutation",marker=True,alpha_=0.9,legend=False,error_style="bars",outtype="pdf")
+    plt.close()
+    NGS_lineplot(["GtoA","TtoC"],namelist,filelist_temp,f"Set24_Mutator_optimization_{namingdict[count0]}",
+                log=True,minmax_range=minmax_range_dict[count0],color=bluered2_2,graphrange=graphrange_dict[count0],linelist=linelist_dict[count0],
+                typename="Mutation",marker=True,alpha_=0.9,legend=False,error_style="bars",outtype="pdf")
+    plt.close()
+
+
+# boxplot fig2d extended fig4###
+filelist_temp=[["2_1","2_2","2_3"],["2_4","2_5","2_6"],["3_1","3_2","3_3"],["3_4","3_5","3_6"],["4_1","4_2","4_3"],["4_4","4_5","4_6"]]
 num=0
 for i in filelist_temp:
     num1=0
     for j in filelist_temp[num]:
-        filelist_temp[num][num1]=basicpath+f"_Exp13-{filelist_temp[num][num1]}.xlsx"
+        filelist_temp[num][num1]=basicpath+f"_Exp9-{filelist_temp[num][num1]}.xlsx"
         num1=num1+1
-    num=num+1   
-        
-namelist=["TadDE-16-CasB_105bp","TadDE_only_105bp"]
+    num=num+1
+namelist=["16-CasB","16-CasC","32-CasB","32-Casc","64-CasB","64-CasC"]
+### target region  (fig2d)###    
+NGSmutation_frequency_v2(["CtoT"],namelist,filelist_temp,"Set21_TadDE_opt_Cyc4_summary_average_mutrange",[443,547],width=3,graphmod="Box",color_list=blue1,legend=False,outtype="pdf")
+NGSmutation_frequency_v2(["GtoA"],namelist,filelist_temp,"Set21_TadDE_opt_Cyc4_summary_average_mutrange",[443,547],width=3,graphmod="Box",color_list=blue2,legend=False,outtype="pdf")
+NGSmutation_frequency_v2(["AtoG"],namelist,filelist_temp,"Set21_TadDE_opt_Cyc4_summary_average_mutrange",[443,547],width=3,graphmod="Box",color_list=red1,legend=False,outtype="pdf")
+NGSmutation_frequency_v2(["TtoC"],namelist,filelist_temp,"Set21_TadDE_opt_Cyc4_summary_average_mutrange",[443,547],width=3,graphmod="Box",color_list=red2,legend=False,outtype="pdf")
+### untargeted region (extended fig4)
+NGSmutation_frequency_v2(["CtoT"],namelist,filelist_temp,"Set21_TadDE_opt_Cyc4_summary_average_mutrange_X",[321,442,548,562],width=3,graphmod="Box",color_list=blue1,legend=False,outtype="pdf")
+NGSmutation_frequency_v2(["GtoA"],namelist,filelist_temp,"Set21_TadDE_opt_Cyc4_summary_average_mutrange_X",[321,442,548,562],width=3,graphmod="Box",color_list=blue2,legend=False,outtype="pdf")
+NGSmutation_frequency_v2(["AtoG"],namelist,filelist_temp,"Set21_TadDE_opt_Cyc4_summary_average_mutrange_X",[321,442,548,562],width=3,graphmod="Box",color_list=red1,legend=False,outtype="pdf")
+NGSmutation_frequency_v2(["TtoC"],namelist,filelist_temp,"Set21_TadDE_opt_Cyc4_summary_average_mutrange_X",[321,442,548,562],width=3,graphmod="Box",color_list=red2,legend=False,outtype="pdf")
 
-NGSmutation_frequency_v2(["CtoT"],namelist,filelist_temp,"Set29_TadDE_proximity_Cyc4_summary_average_mutrange_X",[321,442,548,562],width=1.8,graphmod="Box",color_list=blue1,legend=False,outtype="pdf")
-NGSmutation_frequency_v2(["GtoA"],namelist,filelist_temp,"Set29_TadDE_proximity_Cyc4_summary_average_mutrange_X",[321,442,548,562],width=1.8,graphmod="Box",color_list=blue2,legend=False,outtype="pdf")
-NGSmutation_frequency_v2(["AtoG"],namelist,filelist_temp,"Set29_TadDE_proximity_Cyc4_summary_average_mutrange_X",[321,442,548,562],width=1.8,graphmod="Box",color_list=red1,legend=False,outtype="pdf")
-NGSmutation_frequency_v2(["TtoC"],namelist,filelist_temp,"Set29_TadDE_proximity_Cyc4_summary_average_mutrange_X",[321,442,548,562],width=1.8,graphmod="Box",color_list=red2,legend=False,outtype="pdf")
-NGSstats_average_mutfreq(["CtoT","GtoA","TtoC","AtoG"],namelist,filelist_temp,"Set29_TadDE_proximity_Cyc4_mutrangeX",[321,442,548,562],rangemod="same")
+NGSstats_v2(["CtoT","GtoA","TtoC","AtoG"],namelist,filelist_temp,"Set21_TadDE_opt_Cyc4_mutrange",rangelist=[443,547],rangemod="same",hypothesis_mod="two-sided",ref_num=0)
+NGSstats_average_mutfreq(All_mut_list,namelist,filelist_temp,"Set21_TadDE_opt_Cyc4_mutrange",rangelist=[443,547],rangemod="same")
+NGSstats_average_mutfreq(["CtoT","GtoA","TtoC","AtoG"],namelist,filelist_temp,"Set21_TadDE_opt_Cyc4_mutrangeX",rangelist=[321,442,548,562],rangemod="same")
 
 
-   
+filelist_temp=[["5_1","5_1","5_1"],["5_2","5_2","5_2"],["5_3","5_3","5_3"],["5_4","5_4","5_4"],["5_5","5_5","5_5"],["5_6","5_6","5_6"]]
+num=0
+for i in filelist_temp:
+    num1=0
+    for j in filelist_temp[num]:
+        filelist_temp[num][num1]=basicpath+f"_Exp9-{filelist_temp[num][num1]}.xlsx"
+        num1=num1+1
+    num=num+1
+namelist=["16-CasB","16-CasC","32-CasB","32-Casc","64-CasB","64-CasC"]
+NGSstats_average_mutfreq(All_mut_list,namelist,filelist_temp,"Set21_TadDE_opt_Cyc4_mutrange_cycle0",rangelist=[443,547],rangemod="same")
+
+

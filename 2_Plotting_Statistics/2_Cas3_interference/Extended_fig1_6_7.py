@@ -134,7 +134,7 @@ Cas3_interference(basicpath+file_name,"Endogenous_Cas3_expression_check",
                  sheet="Sheet1",width=3,height=2.4,datatype="pdf",
                  sorting_var="Cas3 Type")
 
-"""Endogenous cas3 statistics (figS1)"""
+"""Endogenous cas3 statistics (Extended fig1)"""
 file_name="_Cas3 interference_endogenous_cas3.xlsx"
 sample_type=["WT_Cascade(+)","WT_Cascade(-)","D75A_Cascade(+)","D75A_Cascade(-)","Empty_Cascade(+)"]
 for i in range(0,len(sample_type)):
@@ -142,7 +142,7 @@ for i in range(0,len(sample_type)):
                                     sheet="Sheet1",sample1=sample_type[i],sample2="Empty_Cascade(-)",mod="ttest",hypothesis_mod="two-sided")
 
 
-"""spacer length barplot (figS9)"""
+"""spacer length barplot (Extended fig6)"""
 file_name="_Cas3 interference_spacer_length.xlsx"
 Cas3_interference(basicpath+file_name,"Set26_length_Interference",
                  sheet="33-417nt",width=5,height=3,datatype="pdf",
@@ -154,7 +154,7 @@ Cas3_interference(basicpath+file_name,"Set26_length_Interference_nocrRNA",
 
 
 
-"""Mismatch Effect barplot (fig S10)"""
+"""Mismatch Effect barplot (Extended fig7)"""
 file_name="_Cas3_interference_Mismatch_effect.xlsx"
 Cas3_interference(basicpath+file_name,"Set27_Mismatch_Interference",
                  sheet="Sheet1",width=3.5,height=3,datatype="pdf",
@@ -162,7 +162,7 @@ Cas3_interference(basicpath+file_name,"Set27_Mismatch_Interference",
 
 
 
-"""Mismatch effect statistics (FigS10)""" 
+"""Mismatch effect statistics (Extended fig7)""" 
 file_name="_Cas3_interference_Mismatch_effect.xlsx"
 sample_type=["No mismatch","mismatch+4","mismatch+34","mismatch+70","mismatch+34&70","mismatch+34to39",]
 for i in range(0,len(sample_type)):

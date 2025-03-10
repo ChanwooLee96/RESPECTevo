@@ -145,8 +145,7 @@ def NGS_lineplot(mutlist,i_merging_name,merging_filelist,o_filename,
     for lines in line.get_lines():
 
         lines.set_markeredgecolor("gray")
-        lines.set_markeredgewidth('0.1')
-        # lines.set_markerfacecolor("none")
+        lines.set_markeredgewidth('0')
 
     len_mutlist=len(mutlist)
 
