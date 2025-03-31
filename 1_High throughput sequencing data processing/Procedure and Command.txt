@@ -1,0 +1,50 @@
+######################################################### 
+###### In case of short or extended (~300 or ~600 bp) sequencing ######
+######################################################### 
+>>1_Pandaseq
+pandaseq -f [forward.fastq] -r [reverse.fastq] -T 8 -F -w output.fastq
+
+>>2_Barcode_sorting & length sorting
+NGS_process.py > barcode_splitter_final() function
+
+
+>>3_Alignment (BWA, Samtools)
+bwa index [Ref_seq.fasta]
+bwa mem -t 8 [ref_seq.fasta] [input.fastq] > [output.sam]
+samtools view -hSbo -@ 32 [output.bam] [output.sam]
+Samtools sort -o [output-sorted.bam] -T [/temp/sample.bam] -threads 8 [output.bam]
+samtools index [output-sorted.bam]
+
+>>4_Mutation_counting
+samtools mpileup --max-depth --skip-indels -B -f [ref.fasta] [output-sorted.bam] >[output1.pileup] && varscan readcounts [output1.pileup] --min-coverage 500 --min-base-qual 30 --output-file [output2.txt]
+
+>>5_convert_txt_to_xlsx
+NGS_process.py > readcount_to_xlsx() function
+
+>>6_visualizing
+functions are in folder "2_Plotting and Statistics"
+
+
+######################################################### 
+############ In case of long (~2700 bp) sequencing ###############
+######################################################### 
+
+>>1_Trimming and quality control
+java -jar trimmomatic-0.39.jar PE -threads 32 -trimlog log0.txt [_1.fastq.gz] [_2.fastq.gz] [trim_paired_1.fastq.gz] [trim_unpaired_1.fastq.gz] [trim_paired_{x}_2.fastq.gz] [trim_unpaired_{x}_2.fastq.gz] ILLUMINACLIP:TruSeq3-PE-2.fa:2:30:10:8:true LEADING:15 TRAILING:15 SLIDINGWINDOW:4:15 MINLEN:36
+
+
+>>2_Paring && Alignment (BWA, Samtools)
+bwa index [Ref_seq.fasta]
+bwa mem -t 32 [Ref_seq.fasta] [trim_paired_1.fastq.gz] [trim_paired_2.fastq.gz] >[output.sam]
+samtools view -hSbo -@ 32 [output.bam] [output.sam]
+Samtools sort -o [output-sorted.bam] -T [/temp/sample.bam] -threads 8 [output.bam]
+samtools index [output-sorted.bam]
+
+>>3_Mutation_counting
+samtools mpileup --max-depth --skip-indels -B -f [ref.fasta] [output-sorted.bam] >[output1.pileup] && varscan readcounts [output1.pileup] --min-coverage 500 --min-base-qual 30 --output-file [output2.txt]
+
+>>4_convert_txt_to_xlsx
+NGS_process.py > readcount_to_xlsx() function
+
+>>5_visualizing
+functions are in folder "2_Plotting and Statistics"

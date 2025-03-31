@@ -1,0 +1,7 @@
+Each name in bracket means file name with "_Exp" (e.g. _Exp18-1_0)
+
+
+[Cycle0, Cycle4]=
+[["18-1_0"],["18-4_0"]] ##B1-B0
+[["18-2_0"],["18-5_0"]] ##B1-B4
+[["18-3_0"],["18-6_0"]] ##B1-B5
