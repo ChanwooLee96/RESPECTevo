@@ -88,7 +88,7 @@ def readcount_to_xlsx(basic_i_file_path,basic_o_file_path): ###after readcount f
             i_file_path=f"{basic_i_file_path}-{i}_sorted-{bcode}.txt"
             o_file_path=f"{basic_o_file_path}-{i}_{j}.xlsx"
             ##example###
-            # path="C:/Users/kfvv1/OneDrive/LOPS/NGS/_5_Set19-2_FinalNGS/"
+            # path="C:/Users/NGS/_5_Set19-2_FinalNGS/"
             # input_name="exp8-1_sorted-AAAA.txt"
             # output_name="_Exp8-1_AAAA_.xlsx"
             
@@ -219,30 +219,38 @@ def readcount_to_xlsx(basic_i_file_path,basic_o_file_path): ###after readcount f
 
 
 
-"""Barcode splitting example-lacZ B1-T1 region"""
-basic_path_bcodesplit="C:/Users/NGS/Exp12"
+"""Barcode splitting example-demo of lacZ B1-T1 region"""
+basic_path_bcodesplit="RESPECTevo-Code_Rawdata/1_High throughput sequencing data processing/Demo_file_barcode_splitting/Demo"
 
-index_list=["1","2","3","4","5"]
+index_list=["1"]
 bcode_list=["TTTT","AAAA","GGTT","TTCC","CCAA","AAGG"]
 Primerbind_1="TCCTTCCCGCCCGGTGCA"
 Primerbind_2="GTCTGGGACTGGGTGGAT"
 barcode_splitter_final(basic_path_bcodesplit,basic_path_bcodesplit)
-index_list=["6"]
-bcode_list=["TTTT","AAAA"]
-barcode_splitter_final(basic_path_bcodesplit,basic_path_bcodesplit)
 
 
-"""Barcode splitting example-lacZ B0 region"""
-index_list=["6","7"]
-bcode_list=["GGTT","TTCC","CCAA","AAGG"]
-Primerbind_1="GCGAGGTGCGGATTGAAAATG"
-Primerbind_2="CATGGTGCCAATGAATCGTC"
-barcode_splitter_final(basic_path_bcodesplit,basic_path_bcodesplit)
+"""Barcode splitting example-lacZ B1-T1 region"""
+# index_list=["1","2","3","4","5"]
+# bcode_list=["TTTT","AAAA","GGTT","TTCC","CCAA","AAGG"]
+# Primerbind_1="TCCTTCCCGCCCGGTGCA"
+# Primerbind_2="GTCTGGGACTGGGTGGAT"
+# barcode_splitter_final(basic_path_bcodesplit,basic_path_bcodesplit)
+# index_list=["6"]
+# bcode_list=["TTTT","AAAA"]
+# barcode_splitter_final(basic_path_bcodesplit,basic_path_bcodesplit)
+
+
+# """Barcode splitting example-lacZ B0 region"""
+# index_list=["6","7"]
+# bcode_list=["GGTT","TTCC","CCAA","AAGG"]
+# Primerbind_1="GCGAGGTGCGGATTGAAAATG"
+# Primerbind_2="CATGGTGCCAATGAATCGTC"
+# barcode_splitter_final(basic_path_bcodesplit,basic_path_bcodesplit)
 
 
 """varscan_recount result (txt) to excel (xlsx) file example- lacZ """
-basic_i_path_excel="C:/Users/NGS/Exp12"
-basic_o_path_excel="C:/Users/NGS/_Exp12"
+basic_i_path_excel="RESPECTevo-Code_Rawdata/1_High throughput sequencing data processing/Demo_file_txt_to_xlsx/Exp12"
+basic_o_path_excel="RESPECTevo-Code_Rawdata/1_High throughput sequencing data processing/Demo_file_txt_to_xlsx/_Exp12"
 
 index_list=["1","2","3","4","5","6"]
 bcode_list=["TTTT","AAAA","GGTT","TTCC","CCAA","AAGG"]
