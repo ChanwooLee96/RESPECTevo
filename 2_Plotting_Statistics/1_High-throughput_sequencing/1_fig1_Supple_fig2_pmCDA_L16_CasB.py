@@ -6,9 +6,6 @@ import matplotlib.ticker as ticker
 from datetime import datetime
 from scipy import stats
 Date=str(datetime.today().strftime("%Y%m%d"))[2:]
-import matplotlib as mpl
-mpl.rcParams['agg.path.chunksize'] = 1000000
-import cProfile
 
 import rpy2.robjects as ro
 from rpy2.robjects import pandas2ri
@@ -16,7 +13,6 @@ from rpy2.robjects.conversion import localconverter
 from rpy2.robjects.packages import importr
 from rpy2.robjects.vectors import FloatVector
 import statsmodels.api as sm
-
 
 ####Global variables ####
 main_title='NGS data result'
@@ -34,13 +30,13 @@ font_label= {'size': 12,
              'verticalalignment': 'baseline',
              'horizontalalignment': 'center'}
 
-
 colors6=["#EB697F","#FF8E7A","#986D81","#FFB37A","#FFB3DA","#FF5EB1"]
 bluered4=["#357FC2","#D23064","#76CAF2","#E37298"]
 bluered2_1=["#357FC2","#D23064"] ##deep blue, red
 bluered2_2=["#76CAF2","#E37298"] ##skyblue, pale red
 blue1=["#357FC2"]
 blue2=["#76CAF2"]
+blue1_2=["#357FC2","#76CAF2"]
 gray1=["#ADB7C0"]
 red1=["#D23064"]
 red2=["#E37298"]
@@ -50,7 +46,7 @@ G_mut_list=["GtoA","GtoC","GtoT"]
 T_mut_list=["TtoA","TtoG","TtoC"]
 C_mut_list=["CtoA","CtoG","CtoT"]
 All_mut_list=["AtoT","AtoG","AtoC","TtoA","TtoG","TtoC","GtoA","GtoT","GtoC","CtoA","CtoT","CtoG"]
-freq_limit=(10**-6)
+freq_limit=(10**-7)
 sorting_var='Type'   ### x value column setting in xlsx file
 value_name_insrt='frequency' ### y value column setting in xlsx file
 type_name='Cycle'  ### hue column setting in xlsx file
@@ -59,7 +55,7 @@ ylim_max=10**0
 outlier=[159,162,165,168,171,201,204,207,210,213,216,219,234,543,546,549,552,553]  ### codon changed position in Phes_codon and will be eliminated 
 
 def NGS_lineplot(mutlist,i_merging_name,merging_filelist,o_filename,
-                 minmax_range=["321","562"], log=True, marker=True, error_style="band", error=("ci",95), linelist=[], graphrange=[], gap=25, alpha_=1,legend=True, ylim_min=2*10**-5, ylim_max=6*10**-1,
+                 minmax_range=["321","562"], log=True, marker=True, error_style="band", error=lambda x: (x.min(), x.max()), linelist=[], graphrange=[], gap=25, alpha_=1,legend=True, ylim_min=2*10**-5, ylim_max=6*10**-1,
                  outlierlist=outlier,typename=type_name, date=Date, width=5.4, height=2.1, color=bluered4,marker_size=5, outtype="png"):
     """
     Lineplot generating function
@@ -85,7 +81,7 @@ def NGS_lineplot(mutlist,i_merging_name,merging_filelist,o_filename,
         print("the number of given files is not matched")
         exit()
         
-    #### Xposition frequency in files, would be merged in one file,with given mutation type#####
+    #### Xposition frequency in files, would be merged in one file,with given mutation type#####s
     merged_df=pd.DataFrame()
     for count in range(0,len_namelist):
         ### Melting, Merging files in merginglist######
@@ -146,6 +142,7 @@ def NGS_lineplot(mutlist,i_merging_name,merging_filelist,o_filename,
                 linewidth=0,
                 palette=color
                 )
+
     if linelist != []:
         for i in linelist:
             ax.axvline(x=i,linestyle='dashed',color="#C2A239",alpha=1,linewidth=1)
@@ -187,208 +184,6 @@ def NGS_lineplot(mutlist,i_merging_name,merging_filelist,o_filename,
 
     print("graph done")
 
-def NGS_lineplot_csv(mutlist,i_merging_name,merging_filelist,o_filename,
-                 minmax_range=["321","562"], log=True, marker=True, error_style="band", error=lambda x: (x.min(), x.max()), linelist=[], graphrange=[], gap=25, alpha_=1,legend=True, ylim_min=2*10**-5, ylim_max=6*10**-1,
-                 outlierlist=outlier,typename="Mutation", date=Date, width=5.4, height=2.1, color=bluered4,marker_size=5,include_ref=False,ratio=False,intype="xlsx", outtype="png"):
-    """
-    Lineplot generating function
-        merging_filelist : should be given as list of file paths list. e.g. [[a,b,c],[d,e,f]]
-                    -> a,b,c and d,e,f would be merged by group respectively.
-        i_merging_name : should be given as list of names. e.g. ["1","2"]
-                    -> a,b,c file and d,e,f file would be named as 1 and 2 respectivley
-    """
-    min_range=int(minmax_range[0]) ###setting range of analysis
-    max_range=int(minmax_range[1])
-    if mutlist==All_mut_list: ###setting naming for mutation list I would use
-        muttype="All"
-    else:
-        muttype=""
-        count=1
-        for x in mutlist: 
-            muttype=muttype+x
-            count=count+1
-            if count==4:
-                break
-    len_namelist=len(i_merging_name)     
-    if len(merging_filelist)!=len_namelist:
-        print("the number of given files is not matched")
-        exit()
-        
-    #### Xposition frequency in files, would be merged in one file,with given mutation type#####
-    merged_df=pd.DataFrame()
-    ratio_df=pd.DataFrame()
-    for count in range(0,len_namelist):
-        ### Melting, Merging files in merginglist######
-
-        for filepath in merging_filelist[count]:
-            if intype=="xlsx":
-                df=pd.read_excel(filepath,"Sheet1")
-            if intype=="csv":
-                df=pd.read_csv(filepath)
-            ## Select proper range ####
-            for i in outlierlist:
-                df=df[df["position"]!=i]
-            df=df[df["position"]>min_range-1] 
-            df=df[df["position"]<max_range+1]
-            
-            Mut_merged_df=pd.DataFrame()
-            for mut in mutlist:
-                columnlist=["position",mut]
-                temp_df=df[columnlist] ### Extract given columns from dataframe ###
-                temp_df=pd.melt(temp_df,id_vars="position",var_name=typename, value_name=value_name_insrt)
-                ### Merging1: Merging by Mutation type  ####
-                Mut_merged_df=pd.concat([temp_df,Mut_merged_df])
-            Mut_merged_df=Mut_merged_df.dropna()
-            Mut_merged_df.reset_index(inplace=True)
-
-            #### Naming #####
-            temp_list=[] 
-            for x in Mut_merged_df.index:
-                temp_list.append(i_merging_name[count])    
-            Mut_merged_df["Cycle"] = temp_list
-            
-            
-        #### Merging2: Merging by Experiment type#####
-            merged_df=pd.concat([Mut_merged_df,merged_df])
-    
-    if ratio:
-
-        for mut in mutlist:
-            df_ref=merged_df[(merged_df["Cycle"]==i_merging_name[0]) & (merged_df[typename]==mut)]
-            df_noref=merged_df[(merged_df["Cycle"]==i_merging_name[1]) & (merged_df[typename]==mut)]
-            df_noref=df_noref.rename(columns={value_name_insrt:"temp"+value_name_insrt}) 
-            df_ref=df_ref.rename(columns={value_name_insrt:"ref"+value_name_insrt})
-            temp_df=pd.DataFrame()        
-            temp_df=pd.merge(df_ref,df_noref,on="position",how="outer")
-            temp_df=temp_df.dropna(axis=0)
-            temp_df=temp_df[temp_df["ref"+value_name_insrt]>0]    ####should not be divided by 0. eliminate data which have the data lower than 0####
-            temp_df=temp_df[temp_df["temp"+value_name_insrt]>0]   
-            temp_df[value_name_insrt_ratio]=temp_df["temp"+value_name_insrt]/temp_df["ref"+value_name_insrt] ##divide by reference frequency        
-            temp_df=temp_df.rename(columns={typename+"_x":typename}) 
-            temp_df1=temp_df[["position",typename,value_name_insrt_ratio,"Cycle_x"]]
-            ratio_df=pd.concat([temp_df1,ratio_df])
-    
-    if not ratio:
-        df_ref=merged_df[merged_df["Cycle"]==i_merging_name[0]]
-        average_ref=df_ref["frequency"].mean()
-        merged_df_noref=merged_df[merged_df["Cycle"]!=i_merging_name[0]]
-    
-    
-    ### making graph ###
-    File_name=f"{date}_{o_filename}-merged_line_{min_range}-{max_range}_{muttype}.{outtype}"
-    fig, ax = plt.subplots(figsize=(width,height))
-    colorlist=color[0:len(mutlist)]
-    sns.set_palette(sns.color_palette(colorlist))
-    plt.gca().spines['top'].set_visible(False)
-    plt.gca().spines['right'].set_visible(False)
-    if ratio:
-        print(ratio_df.head())
-        print(ratio_df.tail())
-        print(ratio_df.dtypes)
-        line=sns.lineplot(
-                data=ratio_df,
-                x="position",
-                y=value_name_insrt_ratio,
-                hue=typename,
-                style="Cycle_x",
-                markers=True,
-                err_style=error_style,
-                ax=ax,
-                hue_order=mutlist,
-                alpha=alpha_,
-                markersize=marker_size,
-                linewidth=0,
-                palette=color
-                )
-        for lines in line.get_lines():
-
-            lines.set_markeredgecolor("gray")
-            lines.set_markeredgewidth('0')
-    if not ratio:
-        if include_ref:
-            ref_line=sns.lineplot(
-                    data=df_ref,
-                    x="position",
-                    y=value_name_insrt,
-                    hue=typename,
-                    style="Cycle",
-                    markers=["X"],
-                    err_style=error_style,
-                    ax=ax,
-                    errorbar=error,
-                    hue_order=mutlist,
-                    alpha=alpha_,
-                    markersize=marker_size,
-                    linewidth=0,
-                    palette=["k"]
-                    )
-            for lines in ref_line.get_lines():
-
-                lines.set_markeredgecolor("gray")
-                lines.set_markeredgewidth('0')
-        
-        line=sns.lineplot(
-                    data=merged_df_noref,
-                    x="position",
-                    y=value_name_insrt,
-                    hue=typename,
-                    style="Cycle",
-                    markers=["o"],
-                    err_style=error_style,
-                    ax=ax,
-                    errorbar=error,
-                    hue_order=mutlist,
-                    alpha=alpha_,
-                    markersize=marker_size,
-                    linewidth=0,
-                    palette=color
-                    )
-        for lines in line.get_lines():
-
-            lines.set_markeredgecolor("gray")
-            lines.set_markeredgewidth('0')
-
-
-    if linelist != []:
-        for i in linelist:
-            ax.axvline(x=i,linestyle='dashed',color="#C2A239",alpha=1,linewidth=1)
-    if not ratio:        
-        ax.axhline(y=average_ref,linestyle=':',color="black",alpha=0.9,linewidth=0.75)
-    
-    
-
-
-
-
-    len_mutlist=len(mutlist)
-
-    if legend:
-        lgd = ax.legend(
-                        loc='center',
-                        bbox_to_anchor=(1.1,0.5),###location of legend box (x,y,width,height)
-                        handletextpad=0.15,
-                        frameon=True)
-    else:
-        ax.get_legend().remove()
-    a=graphrange[0]
-    b=graphrange[1]
-
-    ax.set_xticks(range(a,b,gap))    
-    ax.set_xticklabels(range(a,b,gap))
-    ax.tick_params(axis='both', which='major')
-    ax.set_xlabel("position",fontdict=font_label, labelpad=10)
-    ax.set_ylabel(ylabel,fontdict=font_label, labelpad=10)           
-    ax.set_xlim(list(map(int,minmax_range)))
-    if log:
-        ax.set(yscale="log")
-        ax.set_ylabel("LOG("+ylabel+")",fontdict=font_label, labelpad=10)
-    ax.set_ylim(ylim_min,ylim_max)
-    fig.tight_layout()
-    plt.savefig(File_name,dpi=600)
-
-
-    print("graph done")
-  
 
 def NGSmutation_frequency_v2(mutlist, namelist,i_filelist,o_filename,rangelist,rangemod="same",mergemod="average",outlierlist=outlier,typename=type_name,width=9,height=3,date=Date,outtype="png",
                              graphmod="Pointbar",startpoint="547",color_list=colors6,legend=True,vlinelist=[],ymin=ylim_min,ymax=ylim_max):
@@ -566,7 +361,7 @@ def NGSmutation_frequency_v2(mutlist, namelist,i_filelist,o_filename,rangelist,r
                 handletextpad=0.3)
         count=0
         for x in namelist:
-            lgd.legendHandles[count]._sizes = [40]
+            lgd.legend_handles[count]._sizes = [40]
             count=count+1
     else:
         ax.get_legend().remove()    
@@ -682,6 +477,28 @@ def NGSmutation_ratio_v2(mutlist,namelist,i_filelist,o_filename,rangelist,typena
             temp_df2[typename] = temp_list 
             merged_df=pd.concat([merged_df,temp_df2]) ###After "for"command, average/average_ref data of [b,c],[d,e,f] are mernged together. but with different typename column
             merged_df=merged_df.dropna()
+            
+        #### count n number and  average from each sample###
+        temp_column=[f"{sorting_var}",{typename},"n number","Average ratio"] ##set column title
+        temp_result_list=[]
+        for mut_name in mutlist:
+            for ii_name in namelist:
+                ### extract frequency data having given mutation type and cycle number
+                freq_array=np.array(merged_df[(merged_df[sorting_var]==mut_name)&(merged_df[typename]==ii_name)][value_name_insrt_ratio])
+                n_number=len(freq_array)
+                avr_freq=np.mean(freq_array)
+                temp_result_list.append([mut_name,ii_name,n_number,avr_freq]) # make column which contain [mutation type, sample type, n number]. final product would be list of list
+
+        temp_result_df=pd.DataFrame(temp_result_list,columns=temp_column)
+        # temp_result_df.sort_values(by=["mutation type"],inplace=True)
+                
+        ####  generating excel ####
+        writer=pd.ExcelWriter(f"{date}_n_number_{o_filename}.xlsx",engine='xlsxwriter')
+        merged_df.to_excel(writer, sheet_name="Raw data") # Raw data
+        temp_result_df.to_excel(writer, sheet_name="n number_average") # average result
+        writer.close()            
+            
+
         ### making graph ###
         if rangemod=="same":
             File_name=f"{date}_{o_filename}_ratio_{min_range}-{max_range}_{muttype}.{outtype}"
@@ -724,7 +541,7 @@ def NGSmutation_ratio_v2(mutlist,namelist,i_filelist,o_filename,rangelist,typena
                     handletextpad=0.3)
             count=0
             for x in range(0,len_namelist):
-                lgd.legendHandles[count]._sizes = [40]
+                lgd.legend_handles[count]._sizes = [40]
                 count=count+1
         ax.set_xlabel(xlabel,fontdict=font_label, labelpad=8)
         ax.set_ylabel(ylabel_ratio+"/"+namelist[0]+")",fontdict=font_label, labelpad=10)
@@ -967,10 +784,10 @@ def NGSstats_v3(mutlist, namelist,i_filelist,o_filename,rangelist,rangemod:str="
         merged_df.to_excel(writer, sheet_name="Raw data") # Raw data
         test_result_df.to_excel(writer, sheet_name="Sheet1") # test result
         writer.close()
-       
         
         
-def NGSstats_average_mutfreq(mutlist, namelist,i_filelist,o_filename,rangelist,rangemod="same",mergemod="average",outlierlist=outlier,typename=type_name,date=Date):  ##measuring average frequency
+def NGSstats_average_mutfreq(mutlist, namelist,i_filelist,o_filename,rangelist,rangemod="same",mergemod="average",outlierlist=outlier,typename=type_name,date=Date
+                             , intype="xlsx"):
     if mutlist==All_mut_list: ###setting naming for mutation list I would use
         muttype="All"
     else:
@@ -1007,7 +824,10 @@ def NGSstats_average_mutfreq(mutlist, namelist,i_filelist,o_filename,rangelist,r
         df_freq_temp=pd.DataFrame()
         for y in i_filelist[count]: #e.g. i_file list=[[a,g],[b,c],[d,e,f]] --> until [a,g] ends
             i_file=i_filelist[count][count0] ## read a in 1st "for"cycle and g in 2nd "for"cycle
-            df=pd.read_excel(i_file,"Sheet1")
+            if intype=="xlsx":
+                df=pd.read_excel(i_file,"Sheet1")
+            elif intype=="csv":
+                df=pd.read_csv(i_file)
             df_temp=pd.DataFrame()
             df0=pd.DataFrame()
             ### Classify data then slice by its range 
@@ -1064,7 +884,7 @@ def NGSstats_average_mutfreq(mutlist, namelist,i_filelist,o_filename,rangelist,r
         merged_df=average_df
     
     #### count n number and  average mutation frequency from each sample###
-    temp_column=[f"{sorting_var}",{typename},"n number" ,"Average mutation frequency", "standard deviation"] ##set column title
+    temp_column=[f"{sorting_var}",{typename},"n number" ,"Average mutation frequency", "standard deviation","normality_pvalue","log normality_pvalue"] ##set column title
     temp_result_list=[]
     for mut_name in mutlist:
         for ii_name in namelist:
@@ -1073,7 +893,11 @@ def NGSstats_average_mutfreq(mutlist, namelist,i_filelist,o_filename,rangelist,r
             n_number=len(freq_array)
             avr_freq=np.mean(freq_array)
             std_freq=np.std(freq_array, ddof=1)
-            temp_result_list.append([mut_name,ii_name,n_number,avr_freq,std_freq]) # make column which contain [mutation type, sample type, n number, average, std]. final product would be list of list
+            shapiro=stats.shapiro(freq_array) #shapiro-wilk test for normality validation in original data
+            logshapiro=stats.shapiro(np.log(freq_array))  #shapiro-wilk test for normality validation in log-transformed data
+            normal_pvalue=shapiro.pvalue
+            lognormal_pvalue=logshapiro.pvalue
+            temp_result_list.append([mut_name,ii_name,n_number,avr_freq,std_freq,normal_pvalue,lognormal_pvalue]) # make column which contain [mutation type, sample type, n number, average, std, shapiro test pvalue, log form shapiro test pvalue]. final product would be list of list
     
     temp_result_df=pd.DataFrame(temp_result_list,columns=temp_column)
     # temp_result_df.sort_values(by=["mutation type"],inplace=True)
@@ -1083,8 +907,108 @@ def NGSstats_average_mutfreq(mutlist, namelist,i_filelist,o_filename,rangelist,r
     merged_df.to_excel(writer, sheet_name="Raw data") # Raw data
     temp_result_df.to_excel(writer, sheet_name="average statistics") # average result
     writer.close()
-    print("statistics done")  
+    print("statistics done")    
+          
+
+
+
+basicpath="RESPECTevo-Code_Rawdata/2_Plotting_Statistics/1_High-throughput_sequencing/1_fig1_Supple_fig2_pmCDA_L16_casB_rawdata/"
+
+###  - mutator and + mutator, Empty + 105bp only ###
+Wholelist_mutatortype=[
+                      [["6_3"],["2_1","2_2","2_3"]],  ##16CasB_105bp  +mutator +crRNA
+                      [["6_5"],["5_1","5_2","5_3"]],  ##16CasB_empty  +mutator -crRNA
+                      [["6_6"],["5_4","5_5","5_6"]],  ##All_empty   -mutator -crRNA
+                      [["7_3"],["4_1","4_2","4_3"]] ##Cascadeonly_105bp  -mutator +crRNA
+                      ] 
+namingdict={0:"+mutator +crRNA",1:"+mutator -crRNA",2:"-mutator -crRNA",3:"-mutator +crRNA"}
+minmax_range_dict={0:["321","562"],1:["321","562"],2:["321","562"],3:["321","562"]}
+pheSrange=[300,575]
+
+##pointplot (fig1c)###
+graphrange_dict={0:pheSrange,1:pheSrange,2:pheSrange,3:pheSrange}
+linelist_dict={0:[443,547],1:[],2:[],3:[443,547]}
+namelist=["Cycle 0","Cycle 8"]
+for count0 in range(0,len(Wholelist_mutatortype)):
+    filelist_temp=Wholelist_mutatortype[count0]
+    for count in range(0,len(filelist_temp)):
+        for count2 in range(0,len(filelist_temp[count])):
+            filelist_temp[count][count2]=basicpath+f"_Exp8-{filelist_temp[count][count2]}.xlsx"
+                
+    NGS_lineplot(["CtoT","GtoA"],namelist,filelist_temp,f"Set19-2_concept_study_{namingdict[count0]}",
+            log=True,minmax_range=minmax_range_dict[count0],color=blue1_2,graphrange=graphrange_dict[count0],linelist=linelist_dict[count0],
+            typename="Mutation",marker=True,alpha_=0.9,legend=False,error_style="bars",outtype="pdf")
+    plt.close()
+
+
+
+### targeted region (fig1d)###
+filelist_temp=[["2_1","2_2","2_3"],["5_1","5_2","5_3"],["4_1","4_2","4_3"],["5_4","5_5","5_6"]]
+range__list=[[443,547],[347,547],[443,547],[347,547]]
+num=0
+for i in filelist_temp:
+    num1=0
+    for j in filelist_temp[num]:
+        filelist_temp[num][num1]=basicpath+f"_Exp8-{filelist_temp[num][num1]}.xlsx"
+        num1=num1+1
+    num=num+1
+namelist=["105+mut","empty+mut","105-mut","empty-mut"]
+NGSmutation_frequency_v2(["CtoT"],namelist,filelist_temp,"Set19-2_+-mutator_Cyc8_105bpsummary_average_mutrange",range__list,width=3,graphmod="Box",color_list=blue1,legend=False,rangemod="different",outtype="pdf")
+NGSmutation_frequency_v2(["GtoA"],namelist,filelist_temp,"Set19-2_+-mutator_Cyc8_105bp_summary_average_mutrange",range__list,width=3,graphmod="Box",color_list=blue2,legend=False,rangemod="different",outtype="pdf")
+NGSstats_v3(["CtoT","GtoA"],namelist,filelist_temp,"Set19-2_+-mutator_cyc8_105bp_mutrange",rangelist=range__list,rangemod="different",pairwise_num=[(3,0),(3,1),(3,2)],data_transformation="")
+NGSstats_average_mutfreq(All_mut_list,namelist,filelist_temp,"Set19-2_+-mutator_cyc8_105bp_mutrange",rangelist=range__list,rangemod="different")
+
+
+### untargeted region (Supple fig2)###
+
+filelist_temp=[["2_1","2_2","2_3"],["4_1","4_2","4_3"]]
+range__list=[[321,442,548,562],[321,442,548,562]]
+num=0
+for i in filelist_temp:
+    num1=0
+    for j in filelist_temp[num]:
+        filelist_temp[num][num1]=basicpath+f"_Exp8-{filelist_temp[num][num1]}.xlsx"
+        num1=num1+1
+    num=num+1
+namelist=["105+mut","105-mut"]
+NGSmutation_frequency_v2(["CtoT"],namelist,filelist_temp,"Set19-2_+-mutator_Cyc8_105bpsummary_average_mutrange_X",range__list,width=2.1,graphmod="Box",color_list=blue1,legend=False,rangemod="different",outtype="pdf")
+NGSmutation_frequency_v2(["GtoA"],namelist,filelist_temp,"Set19-2_+-mutator_Cyc8_105bp_summary_average_mutrange_X",range__list,width=2.1,graphmod="Box",color_list=blue2,legend=False,rangemod="different",outtype="pdf")
+NGSstats_average_mutfreq(["CtoT","GtoA"],namelist,filelist_temp,"Set19-2_+-mutator_Cyc8_105bp_summary_average_mutrange_X",rangelist=range__list,rangemod="different")
+
+
+
+### boxplot by cycle  (fig1e, Supple fig2)##
+filelist_temp=[["6_3"],["6_3"],["8_1","8_2","8_3"],["8_1","8_2","8_3"],["8_4","8_5","8_6"],["8_4","8_5","8_6"],["9_1","9_2","9_3"],["9_1","9_2","9_3"],["9_4","9_5","9_6"],["9_4","9_5","9_6"]]
+num=0
+for i in filelist_temp:
+    num1=0
+    for j in filelist_temp[num]:
+        filelist_temp[num][num1]=basicpath+f"_Exp8-{filelist_temp[num][num1]}.xlsx"
+        num1=num1+1
+    num=num+1
+namelist=["Cyc0mut","Cyc0mutX","Cyc1mut","Cyc1mutX","Cyc2mut","Cyc2mutX","Cyc4mut","Cyc4mutX","Cyc6mut","Cyc6mutX"]
+range__list=[[443,547],[321,442,548,562],[443,547],[321,442,548,562],[443,547],[321,442,548,562],[443,547],[321,442,548,562],[443,547],[321,442,548,562]]
     
-    
-    
-    
+NGSmutation_frequency_v2(["CtoT"],namelist,filelist_temp,"Set19-2_Pm-16-CasB_Cycle_summary_average_mutrange_both",width=5.25,graphmod="Box",color_list=blue1,legend=False,outtype="pdf",rangelist=range__list,rangemod="different")
+NGSmutation_frequency_v2(["GtoA"],namelist,filelist_temp,"Set19-2_Pm-16-CasB_Cycle_summary_average_mutrange_both",width=5.25,graphmod="Box",color_list=blue2,legend=False,outtype="pdf",rangelist=range__list,rangemod="different")
+statlist=[(0,2),(2,4),(4,6),(6,8),(0,1),(2,3),(4,5),(6,7),(8,9)]
+NGSstats_v3(["CtoT","GtoA"],namelist,filelist_temp,f"Set19-2_pm-16-casB_cycsummary_mutrange_both_ref",rangemod="different",rangelist=range__list,pairwise_num=statlist,data_transformation="")
+NGSstats_average_mutfreq(["CtoT","GtoA"],namelist,filelist_temp,f"Set19-2_pm-16-casB_cycsummary_mutrange_both",rangelist=range__list,rangemod="different")
+
+
+
+
+
+###frequency ratio (Supple fig2) ###
+filelist_temp=[["5_4","5_5","5_6"],["2_1","2_2","2_3"],["5_1","5_2","5_3"],["4_1","4_2","4_3"]]
+range__list=[[443,547],[347,547],[443,547]]
+num=0
+for i in filelist_temp:
+    num1=0
+    for j in filelist_temp[num]:
+        filelist_temp[num][num1]=basicpath+f"_Exp8-{filelist_temp[num][num1]}.xlsx"
+        num1=num1+1
+    num=num+1
+namelist=["105+mut","empty+mut","105-mut"]
+NGSmutation_ratio_v2(All_mut_list,namelist,filelist_temp,"Set19-2_+-mutator_cyc8_summary_average_mutrange",range__list,width=9,legend=True,rangemod="different",outtype="pdf")
+

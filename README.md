@@ -11,14 +11,19 @@ Demo files for testing NGS_process.py are included in folders adjacent to the sc
 
 For the barcode_splitter_final function, the demo input is an artificially generated dataset. The function identifies and uses the last 4-letter barcode to split the input file. After execution, the function generates separate output files containing sequences with valid barcodes, correct lengths and primer binding site.
 
-Running the Plotting and Statistics functions on the full deposited dataset takes approximately 10–20 minutes. The NGS_process function completes in under one minute on the demo file, but requires about 2 hours when processing the Real dataset.
+Running the Plotting and Statistics functions on the full deposited dataset takes approximately ~120 minutes ( ~100 minutes in WGS). The NGS_process function completes in under one minute on the demo file, but requires about 2 hours (~1 day in WGS) when processing each real dataset.
 
 Version of the code has been tested on
-Python v.3.9.18
--pandas v 1.5.1
--numpy v 1.24.3
--matplotlib v 3.5.3
--openpyxl v 3. 0. 10
--seaborn v 0. 13. 2
--scipy v 1. 10. 1
--biopython v 1. 78
+Python v. 3.13.5
+-pandas v 2.2.3
+-numpy v 2.1.3
+-matplotlib v 3.10.0
+-openpyxl v 3.1.5
+-seaborn v 0.13.2
+-scipy v 1.15.3
+-biopython v 1.85
+-statsmodels v 0.14.4
+-rpy2 v 3.6.2
+R v 4.5.1
+-package brunnermunzel
+-package GFD

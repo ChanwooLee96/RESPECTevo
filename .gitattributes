@@ -1,0 +1,4 @@
+2_Plotting_Statistics/1_High-throughput_sequencing/8_Supple_fig10_wholegenome_rawdata/_Exp19-1_0_A_T_G_C.csv filter=lfs diff=lfs merge=lfs -text
+2_Plotting_Statistics/1_High-throughput_sequencing/8_Supple_fig10_wholegenome_rawdata/_Exp19-2_0_mutation.csv filter=lfs diff=lfs merge=lfs -text
+2_Plotting_Statistics/1_High-throughput_sequencing/8_Supple_fig10_wholegenome_rawdata/_Exp19-2_0_A_T_G_C.csv filter=lfs diff=lfs merge=lfs -text
+2_Plotting_Statistics/1_High-throughput_sequencing/8_Supple_fig10_wholegenome_rawdata/_Exp19-1_0_mutation.csv filter=lfs diff=lfs merge=lfs -text

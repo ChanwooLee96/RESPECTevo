@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 import openpyxl
-import seaborn.objects as so
 from datetime import datetime
+import seaborn.objects as so
 from scipy import stats
 
 import rpy2.robjects as ro
@@ -15,112 +15,94 @@ from rpy2.robjects.vectors import FloatVector
 import statsmodels.api as sm
 ############### Global variance setting ###############
 Date=str(datetime.today().strftime("%Y%m%d"))[2:]
-main_title='Suppression rate test'
+main_title='Tranformation efficiency test'
 subtitle1=''
 subtitle2=''
-ylabel='Suppression rate'
-xlabel='Spacer'
-"""sorting_var  ### x value in excel"""
-type_name='Cycle'  ###hue name in excel
-value_name_insrt='MSC_ugpmL' ### y value in excel
+ylabel='Log(Interference efficiency)'
+xlabel='Type'
+sorting_var='Spacer'   ### x value in excel
+value_name_insrt='Interference_rate' ### y value in excel
 font_label= {'size': 12,
              'weight' : 'bold',
              'color'  : 'Gray',
              'verticalalignment': 'baseline',
              'horizontalalignment': 'center'}
-colors6=["#727171","#16803a","#bf930a","#689429"]
 
-def suppression_freq(i_file_path,o_file_name,
-                     sheet="suppression summary",width=5.5,height=3,legend_num=3,sorting_var="Spacer",type_name="Cycle",datatype="png",ymax=2,ymin=10**-7,log=True,point=False,swarm_line=0.2,alpha_=0.7):
+gray1=["#ADB7C0"]
+skyblue1=["#2B9FD5"]
+
+####### function definition: draw both swarm and box plot ######
+####### x= excel data, y=sorting name of the output file ###########
+def Cas3_interference(i_file_path,o_file_name,sheet="Sheet1",
+                      quantative=False,width=5.5,height=3,legend=False,legend_num=6,sorting_var="Spacer",datatype="png",log=True,ymax=10**3,ymin=3*10**-1):
     df=pd.read_excel(i_file_path,sheet_name=sheet)
     File_name=f"{Date}_{o_file_name}.{datatype}"
     plt.title(main_title)
     fig, ax = plt.subplots(figsize=(width,height))
-    
-    
-    color=colors6[0:legend_num]
-    sns.set_palette(sns.color_palette(color))
-
-    
+    # df[value_name_insrt]=df[value_name_insrt].apply(lambda x: 0 if x==0 else np.log10(x)) 
+    color=skyblue1[0:legend_num]
     sns.set_palette(sns.color_palette(color))
     
-    if point:
-        point_graph=sns.pointplot(data=df,
-                        x=sorting_var,
-                        y=value_name_insrt,
-                        hue=type_name,
-                        linestyle="None",
-                        dodge=0.6,
-                        marker="_",
-                        markersize=15,
-                        markeredgewidth=2,
-                        errorbar=("ci",95),
-                        err_kws={'linewidth':0.5},
-                        # native_scale=False,
-                        capsize=0.05,
-                        palette='dark:black'
-                        # palette=color
-                        )
-        swarm=sns.swarmplot(data=df,
-                        x=sorting_var,
-                        y=value_name_insrt,
-                        hue=type_name,
-                        palette=color,
-                        dodge=True,
-                        size=3.5,
-                        linewidth=swarm_line,
-                        edgecolor="auto",
-                        legend=False,
-                        alpha=alpha_)
 
+    if quantative:
+        scatter=sns.scatterplot(data=df,
+                    x=sorting_var,
+                    y=value_name_insrt,
+                    # palette=color,
+                    s=10,   
+                    linewidth=0.5,
+                    edgecolor="black",
+                    alpha=0.7,
+                    legend=False)
     else:
         swarm=sns.swarmplot(data=df,
-            x=sorting_var,
-            y=value_name_insrt,
-            hue=type_name,
-            palette=color,
-            # color="black",
-            dodge=True,
-            size=2.5,
-            linewidth=swarm_line,
-            edgecolor="gray",
-            alpha=alpha_)    
-        if log:
-            bar=so.Plot(df,x=sorting_var,y=value_name_insrt,color=type_name).add(so.Bar(baseline=ymin,edgewidth=0.7),so.Agg(),so.Dodge()).scale(y="log",color=color).add(so.Range(color="gray",linewidth=0.5), so.Est(),so.Dodge())
-        else:
-            bar=so.Plot(df,x=sorting_var,y=value_name_insrt,color=type_name).add(so.Bar(baseline=ymin,edgewidth=0.7),so.Agg(),so.Dodge()).scale(color=color).add(so.Range(color="gray",linewidth=0.5), so.Est(),so.Dodge())
-        
-    # bar=sns.barplot(data=df,
+                x=sorting_var,
+                y=value_name_insrt,
+                # palette=color,
+                # color="black",
+                dodge=False,
+                size=2.5,
+                linewidth=0.2,
+                edgecolor="black",
+                alpha=0.7)
+    sns.set_palette(sns.color_palette(color))
+    # plt.bar(x=df.index,height=value_name_insrt,color=color,bottom=1,ecolor="gray",data=df)
+    # bar=so.Plot(df,x=sorting_var,y=value_name_insrt).add(so.Bar(baseline=ymin),so.Agg()).add(so.Range(), so.Est()).scale(y="log")
+    if log==True:
+        bar=so.Plot(df,x=sorting_var,y=value_name_insrt).add(so.Bar(baseline=ymin,color=skyblue1[0]),so.Agg()).add(so.Range(color="gray"), so.Est()).scale(y="log")
+    if log==False:
+        bar=so.Plot(df,x=sorting_var,y=value_name_insrt).add(so.Bar(baseline=ymin,color=skyblue1[0]),so.Agg()).add(so.Range(color="gray"), so.Est())
+    # bar=sns.catplot(data=df,
     #             x=sorting_var,
     #             y=value_name_insrt,
     #             errcolor="gray",
     #             errwidth=0.5,
+    #             palette=color,
     #             capsize=0,
-    #             hue=type_name
-    #             )
+    #             kind='bar'
 
-    handles,labels=ax.get_legend_handles_labels()
-    lgd = ax.legend(handles[0:legend_num], labels[0:legend_num],
-               loc='center',
-               bbox_to_anchor=(1.2,0.5),
-               handletextpad=0.5,
-               )
-    for i in range(0,legend_num):
-        lgd.legend_handles[i]._sizes = [40]
+    #             )
+    # ax.axhline(y=0,color="black",alpha=0.9,linewidth=0.75)
+    if legend:
+        handles,labels=ax.get_legend_handles_labels()
+        lgd = ax.legend(handles[0:legend_num], labels[0:legend_num],
+                loc='center',
+                bbox_to_anchor=(1.2,0.5),
+                handletextpad=0.5,
+                )
+        for i in range(0,legend_num):
+            lgd.legendHandles[i]._sizes = [40]
 
 
     ax.set_xlabel(xlabel,fontdict=font_label, labelpad=8)
     ax.set_ylabel(ylabel,fontdict=font_label, labelpad=10)
-    if log:
+    if log ==True:
         ax.set(yscale="log")
     ax.set_ylim(ymin,ymax)
-
-    if point != True:
-        bar.on(ax).save(File_name,dpi=300)
     fig.tight_layout()
-    plt.savefig(File_name,dpi=300)
+    bar.on(ax).save(File_name,dpi=300)
+    # plt.savefig(File_name,dpi=300)
     print("graph done")
-    plt.close()
 
 
 def two_sample_stats_independent_v2(i_file_path,namelist=["FolA1","FolA2","FolA1+2","W3110"],o_filename:str="",
@@ -231,19 +213,60 @@ def two_sample_stats_independent_v2(i_file_path,namelist=["FolA1","FolA2","FolA1
     writer=pd.ExcelWriter(f"{date}_{statsmod}_{o_filename}.xlsx",engine='xlsxwriter')
     test_result_df.to_excel(writer, sheet_name="Sheet1") # test result
     writer.close()
-     
+    print("statistics done")
+ 
+ 
+ 
+
+basicpath="RESPECTevo-Code_Rawdata/2_Plotting_Statistics/2_Cas3_interference/rawdata_zip/"
+
+"""Endogenous Cas3 activity barplot (FigS1)"""
+file_name="_Cas3 interference_endogenous_cas3.xlsx"
+Cas3_interference(basicpath+file_name,"Endogenous_Cas3_expression_check",
+                 sheet="Sheet1",width=3,height=2.4,datatype="pdf",
+                 sorting_var="Cas3_Type")
+
+"""Endogenous cas3 statistics (Supple fig1)"""
+file_name="_Cas3 interference_endogenous_cas3.xlsx"
+sample_type=["WT_Cascade(+)","WT_Cascade(-)","D75A_Cascade(+)","D75A_Cascade(-)","Empty_Cascade(+)","Empty_Cascade(-)"]
+
+two_sample_stats_independent_v2(basicpath+file_name,Sorting_var="Cas3_Type",value_name="Interference_rate",pairwise_num=[(5,0),(5,1),(5,2),(5,3),(5,4)],
+                                sheet="Sheet1",namelist=sample_type,statsmod="ttest",omnibus="ANOVA",o_filename="Cas3_endogenous_log",data_transformation="log")
 
 
 
-basicpath="RESPECTevo-Code_Rawdata/2_Plotting_Statistics/4_TMP_selection_conc/"
+
+"""spacer length barplot (Supple fig6)"""
+file_name="_Cas3 interference_spacer_length.xlsx"
+Cas3_interference(basicpath+file_name,"Set26_length_Interference",
+                 sheet="33-417nt",width=5,height=3,datatype="pdf",
+                 sorting_var="Spacer",ymax=2*10**5, quantative=True)
+
+Cas3_interference(basicpath+file_name,"Set26_length_Interference_nocrRNA",
+                 sheet="nocrRNA",width=1.03,height=3,datatype="pdf",
+                 sorting_var="Spacer",ymax=2*10**5, quantative=False)
+
+"""pheS site2 spacer length barplot (supple fig7)"""
+file_name="_Cas3_interference_PheSsite2_spacer_length.xlsx"
+Cas3_interference(basicpath+file_name,"Set45_PheSsite2_length_interference",
+                 sheet="Sheet1",width=4.5,height=3,datatype="pdf",
+                 sorting_var="Spacer",ymax=2*10**4, quantative=True)
+
+Cas3_interference(basicpath+file_name,"Set45_PheSsite2_length_interference_nocrRNA",
+                 sheet="Sheet2",width=1.1,height=3,datatype="pdf",
+                 sorting_var="Spacer",ymax=2*10**4, quantative=False)
 
 
-file_name="_Fig5_TMP_conc._by_selection.xlsx"
+"""Mismatch Effect barplot (Supple fig8)"""
+file_name="_Cas3_interference_Mismatch_effect.xlsx"
+Cas3_interference(basicpath+file_name,"Set27_Mismatch_Interference",
+                 sheet="Sheet1",width=3.5,height=3,datatype="pdf",
+                 sorting_var="Spacer",ymax=5*10**4)
 
 
-suppression_freq(basicpath+file_name,"Set39_Maximal_survival_passage_summary_huediff_box",
-                 sheet="Summary_maximal_survival",width=6,height=3,datatype="pdf", legend_num=4,
-                 sorting_var="Passage",type_name="target",ymin=0.05,ymax=3*10**3,point=True,alpha_=0.8,swarm_line=0)
 
-two_sample_stats_independent_v2(basicpath+file_name,o_filename="TMP selection",omnibus="Permuted WTS",statsmod="permuted_brunner-munzel",
-                                data_transformation="",pairwise_num=[(2,0),(2,1),(2,3)])
+"""Mismatch effect statistics (Extended fig7)""" 
+file_name="_Cas3_interference_Mismatch_effect.xlsx"
+sample_type=["No mismatch","mismatch+4","mismatch+34","mismatch+70","mismatch+34&70","mismatch+34to39","no crRNA"]
+two_sample_stats_independent_v2(basicpath+file_name,Sorting_var="Spacer",value_name="Interference_rate",pairwise_num=[(6,0),(6,1),(6,2),(6,3),(6,4),(6,5),(0,1),(0,5)],
+                                sheet="Sheet1",namelist=sample_type,statsmod="ttest",omnibus="ANOVA",o_filename="Cas3_Mismatch_log",data_transformation="log")

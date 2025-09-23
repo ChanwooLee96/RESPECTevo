@@ -1,0 +1,7 @@
+Each name in bracket means file name with "_Exp" (e.g. _Exp18-1_0)
+
+
+[Cycle0, Cycle4]=
+[["19-1_0"],["19-2_0"]] ##B1-B5 wholegenome sequencing
+A_T_G_C: the number of sequences (raw data of mutation frequency)
+mutation: mutation frequency calculated
